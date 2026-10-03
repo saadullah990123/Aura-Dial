@@ -26,12 +26,13 @@ const contentSecurityPolicy = [
 // One year, without includeSubDomains/preload (both are hard to undo; add later if wanted).
 const productionOnlyHeaders = isProduction
   ? [
-      { key: "Content-Security-Policy", value: contentSecurityPolicy },
-      { key: "Strict-Transport-Security", value: "max-age=31536000" },
-    ]
+    { key: "Content-Security-Policy", value: contentSecurityPolicy },
+    { key: "Strict-Transport-Security", value: "max-age=31536000" },
+  ]
   : [];
 
 const nextConfig: NextConfig = {
+  devIndicators: false,
   poweredByHeader: false,
   images: {
     // Product photos from Cloudinary and studio Unsplash images
