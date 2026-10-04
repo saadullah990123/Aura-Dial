@@ -170,8 +170,8 @@ export default async function HomePage() {
       </section>
 
       {/* Quick Category Bar - Matches Mobile Reference UI */}
-      <section className="bg-ink border-b border-white/5 px-4 py-4 sm:px-6" aria-label="Quick category selector">
-        <div className="mx-auto grid max-w-7xl grid-cols-4 gap-2 sm:gap-4">
+      <section className="bg-ink border-b border-white/5 px-3.5 py-4 sm:px-6" aria-label="Quick category selector">
+        <div className="mx-auto grid max-w-7xl grid-cols-4 gap-2.5 sm:gap-4">
           {[
             { label: "Watches", href: "/collections/watches", icon: Watch, active: true },
             { label: "Glasses", href: "/collections/glasses", icon: Glasses, active: false },
@@ -206,8 +206,8 @@ export default async function HomePage() {
       </section>
 
       {/* Category cards */}
-      <section className="bg-cream px-4 sm:px-6 lg:px-8 py-8 sm:py-10" aria-label="Shop by category">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+      <section className="bg-[#0e0a07] px-4 py-7 sm:px-6 sm:py-10 lg:px-8" aria-label="Shop by category">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-[14px] gap-y-[16px] min-[320px]:gap-x-[10px] min-[320px]:gap-y-[12px] sm:gap-4 lg:grid-cols-4">
           {CATEGORY_CARDS.map((card) => {
             const cardImg =
               tileImages[card.tile] ||
@@ -217,7 +217,7 @@ export default async function HomePage() {
               <Link
                 key={card.label}
                 href={card.href}
-                className={`group relative flex aspect-[4/3.4] flex-col justify-end overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br ${card.bg} shadow-xl shadow-black/20`}
+                className={`group relative flex aspect-[4/3.4] flex-col justify-end overflow-hidden rounded-[16px] border border-white/15 bg-gradient-to-br ${card.bg} shadow-xl shadow-black/50 ring-1 ring-inset ring-white/5`}
               >
                 {cardImg ? (
                   <Image
