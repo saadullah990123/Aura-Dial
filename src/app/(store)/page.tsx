@@ -1,4 +1,4 @@
-import { ArrowRight, Headphones, RotateCcw, ShieldCheck, Star, Truck } from "lucide-react";
+import { ArrowRight, Glasses, Headphones, RotateCcw, ShieldCheck, Star, Truck, Watch } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -169,6 +169,42 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Quick Category Bar - Matches Mobile Reference UI */}
+      <section className="bg-ink border-b border-white/5 px-4 py-4 sm:px-6" aria-label="Quick category selector">
+        <div className="mx-auto grid max-w-7xl grid-cols-4 gap-2 sm:gap-4">
+          {[
+            { label: "Watches", href: "/collections/watches", icon: Watch, active: true },
+            { label: "Glasses", href: "/collections/glasses", icon: Glasses, active: false },
+            { label: "Men's", href: "/collections/all?gender=men", symbol: "♂", active: false },
+            { label: "Women's", href: "/collections/all?gender=women", symbol: "♀", active: false },
+          ].map((cat) => {
+            const Icon = cat.icon;
+            return (
+              <Link
+                key={cat.label}
+                href={cat.href}
+                className={`group flex flex-col items-center justify-center rounded-2xl border p-2.5 sm:p-3.5 text-center transition-all duration-200 ${
+                  cat.active
+                    ? "border-gold/60 bg-[#1e1711] text-gold shadow-md shadow-amber-950/20"
+                    : "border-white/10 bg-[#16120e] text-stone-300 hover:border-gold/40 hover:text-gold"
+                }`}
+              >
+                <div className="flex size-7 sm:size-8 items-center justify-center">
+                  {Icon ? (
+                    <Icon className="size-4.5 sm:size-5 transition-transform group-hover:scale-110" />
+                  ) : (
+                    <span className="text-base sm:text-lg font-bold leading-none">{cat.symbol}</span>
+                  )}
+                </div>
+                <span className="mt-1 text-[11px] sm:text-xs font-medium tracking-wide">
+                  {cat.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Category cards */}
       <section className="bg-cream px-4 sm:px-6 lg:px-8 py-8 sm:py-10" aria-label="Shop by category">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
@@ -237,13 +273,13 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      {/* Best sellers */}
+      {/* Featured Products / Best Sellers */}
       <section className="bg-cream px-4 sm:px-6 lg:px-8 py-14" aria-labelledby="best-sellers">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between gap-4">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-gold-deep">
-                Curated Selection
+                Featured Products
               </p>
               <h2 id="best-sellers" className="mt-1 font-serif text-3xl font-semibold text-ink">
                 Our Best Sellers
@@ -258,7 +294,7 @@ export default async function HomePage() {
           </div>
 
           {bestSellers.length > 0 ? (
-            <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
               {bestSellers.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -271,7 +307,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Men's Watches — local product showcase */}
+      {/* Men's Watches — Local product showcase */}
       <section className="bg-paper px-4 sm:px-6 lg:px-8 py-14" aria-labelledby="mens-watches-gallery">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between gap-4 mb-8">
@@ -291,43 +327,15 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
             {[
-              { id: "local-watch-feiwo",    src: "/images/feiwo-blue-dial-twotone.jpg",  name: "FEIWO Aura Dial – Blue Royal",    price: 12499 },
-              { id: "local-watch-led-gold", src: "/images/led-gold-digital-watch.jpg",   name: "LED Gold Digital Watch",          price: 8999  },
-              { id: "local-watch-led-col",  src: "/images/led-gold-digital-collage.jpg", name: "LED Gold – Multi View",           price: 9499  },
-              { id: "local-watch-matturi",  src: "/images/matturi-silver-led-watch.jpg", name: "Matturi Silver LED – 3Time",      price: 9999  },
-              { id: "local-watch-black",    src: "/images/black-dial-gold-accent.jpg",   name: "Black Dial Gold Accent",         price: 11499 },
+              { id: "local-watch-feiwo",    imageUrl: "/images/feiwo-blue-dial-twotone.jpg",  name: "FEIWO Royal Blue Dial",           price: 12499, salePrice: 14999, slug: "feiwo-royal-blue", brand: "FEIWO", gender: "men" as const, inStock: true, categorySlug: "watches", isBestseller: true },
+              { id: "local-watch-led-gold", imageUrl: "/images/led-gold-digital-watch.jpg",   name: "LED Gold Digital Watch",          price: 8999,  salePrice: null, slug: "led-gold-digital", brand: "Aura Dial", gender: "men" as const, inStock: true, categorySlug: "watches" },
+              { id: "local-watch-led-col",  imageUrl: "/images/led-gold-digital-collage.jpg", name: "LED Gold Multi-Angle Edition",   price: 9499,  salePrice: null, slug: "led-gold-multi", brand: "Aura Dial", gender: "men" as const, inStock: true, categorySlug: "watches", isFeatured: true },
+              { id: "local-watch-matturi",  imageUrl: "/images/matturi-silver-led-watch.jpg", name: "Matturi Silver LED 3Time",       price: 9999,  salePrice: null, slug: "matturi-silver-led", brand: "Matturi", gender: "men" as const, inStock: true, categorySlug: "watches" },
+              { id: "local-watch-black",    imageUrl: "/images/black-dial-gold-accent.jpg",   name: "Black Dial Gold Accent Classic",  price: 11499, salePrice: 13500, slug: "black-dial-gold", brand: "Aura Dial", gender: "men" as const, inStock: true, categorySlug: "watches" },
             ].map((watch) => (
-              <div
-                key={watch.id}
-                className="group flex flex-col overflow-hidden rounded-xl border border-sand/80 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-gold/50 hover:shadow-lg"
-              >
-                <Link href="/collections/watches?gender=men" className="relative block aspect-square w-full overflow-hidden bg-stone-50">
-                  <Image
-                    src={watch.src}
-                    alt={watch.name}
-                    fill
-                    sizes="(min-width: 1024px) 20vw, (min-width: 640px) 50vw, 50vw"
-                    className="object-cover transition duration-500 group-hover:scale-105"
-                  />
-                </Link>
-                <div className="flex flex-1 flex-col gap-1 p-3 sm:p-4 text-center">
-                  <h3 className="line-clamp-2 min-h-[2.5rem] flex items-center justify-center text-xs font-medium leading-snug text-ink sm:text-sm">
-                    {watch.name}
-                  </h3>
-                  <p className="text-sm font-bold text-ink">Rs. {watch.price.toLocaleString()}</p>
-                  <div className="mt-auto pt-3">
-                    <AddToCartButton
-                      productId={watch.id}
-                      name={watch.name}
-                      price={watch.price}
-                      imageUrl={watch.src}
-                      inStock={true}
-                    />
-                  </div>
-                </div>
-              </div>
+              <ProductCard key={watch.id} product={watch} />
             ))}
           </div>
         </div>

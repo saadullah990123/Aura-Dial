@@ -35,6 +35,10 @@ export type StoreProduct = {
   inStock: boolean;
   categorySlug: string | null;
   imageUrl: string | null;
+  isBestseller?: boolean;
+  isFeatured?: boolean;
+  rating?: number | null;
+  reviewCount?: number;
 };
 
 export type StoreProductDetail = StoreProduct & {
@@ -196,6 +200,8 @@ export async function getProducts(
           price: products.price,
           salePrice: products.salePrice,
           stockQuantity: products.stockQuantity,
+          isBestseller: products.isBestseller,
+          isFeatured: products.isFeatured,
           categorySlug: categories.slug,
         })
         .from(products)
@@ -238,6 +244,8 @@ export async function getProducts(
         inStock: row.stockQuantity > 0,
         categorySlug: row.categorySlug,
         imageUrl: firstImage.get(row.id) ?? null,
+        isBestseller: row.isBestseller ?? false,
+        isFeatured: row.isFeatured ?? false,
       }));
     },
   );

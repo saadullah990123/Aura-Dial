@@ -72,33 +72,37 @@ export function HeaderClient({
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-ink/95 text-white backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between lg:justify-start gap-4 sm:gap-6 px-4 sm:px-6 lg:px-8">
         <button
           type="button"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((value) => !value)}
-          className="-ml-2 rounded-full p-2 text-stone-200 hover:text-gold lg:hidden"
+          className="-ml-2 rounded-full p-2 text-stone-200 hover:text-gold lg:hidden shrink-0"
         >
           {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
 
-        <Link href="/" className="flex items-center gap-2.5" aria-label={`${storeName} home`}>
+        <Link
+          href="/"
+          className="flex items-center gap-2 mx-auto lg:mx-0 text-center lg:text-left"
+          aria-label={`${storeName} home`}
+        >
           <Image
             src="/brand/logo-mark.png"
             alt=""
             width={310}
             height={298}
             priority
-            sizes="48px"
-            className="h-11 w-auto"
+            sizes="40px"
+            className="h-8 sm:h-10 w-auto"
           />
           <span className="flex flex-col leading-none">
-            <span className="bg-gradient-to-b from-[#f3d9a4] to-[#c99448] bg-clip-text font-serif text-base font-semibold uppercase tracking-[0.2em] text-transparent sm:text-lg">
+            <span className="bg-gradient-to-b from-[#f3d9a4] to-[#c99448] bg-clip-text font-serif text-sm sm:text-base font-semibold uppercase tracking-[0.2em] text-transparent">
               Aura Dial
             </span>
-            <span className="mt-1.5 hidden text-[8px] font-medium uppercase tracking-[0.32em] text-stone-400 sm:block">
-              Watches | Glasses | Style
+            <span className="mt-1 text-[7px] sm:text-[8px] font-medium uppercase tracking-[0.28em] text-stone-400">
+              Watches &amp; Glasses
             </span>
           </span>
         </Link>
