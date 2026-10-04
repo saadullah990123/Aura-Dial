@@ -2,6 +2,8 @@ import { ArrowRight, Headphones, RotateCcw, ShieldCheck, Star, Truck } from "luc
 import Image from "next/image";
 import Link from "next/link";
 
+import { AddToCartButton } from "@/components/store/add-to-cart-button";
+
 import { GlassesArt, HeroArt, WatchArt, type ArtTone } from "@/components/store/art";
 import { ProductCard } from "@/components/store/product-card";
 import { ProductCarousel } from "@/components/store/product-carousel";
@@ -150,10 +152,10 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {settings.heroImageUrl ? (
+          {settings.heroImageUrl || "/images/univers-point-slim-stand.jpg" ? (
             <div className="relative h-[280px] overflow-hidden rounded-2xl sm:h-[340px] md:h-[400px]">
               <Image
-                src={settings.heroImageUrl}
+                src={settings.heroImageUrl || "/images/univers-point-slim-stand.jpg"}
                 alt="Aura Dial featured watches and glasses"
                 fill
                 priority
@@ -170,29 +172,34 @@ export default async function HomePage() {
       {/* Category cards */}
       <section className="bg-cream px-4 sm:px-6 lg:px-8 py-8 sm:py-10" aria-label="Shop by category">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-          {CATEGORY_CARDS.map((card) => (
-            <Link
-              key={card.label}
-              href={card.href}
-              className={`group relative flex aspect-[4/3.4] flex-col justify-end overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br ${card.bg} shadow-xl shadow-black/20`}
-            >
-              {tileImages[card.tile] ? (
-                <Image
-                  src={tileImages[card.tile] as string}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1024px) 25vw, 50vw"
-                  className="object-cover opacity-90 transition duration-500 group-hover:scale-105"
-                />
-              ) : (
-                <div className="absolute inset-x-0 top-0 flex h-[68%] items-center justify-center">
-                  {card.kind === "watch" ? (
-                    <WatchArt tone={card.tone} className="h-[92%] w-auto transition duration-500 group-hover:scale-105" />
-                  ) : (
-                    <GlassesArt tone={card.tone} className="w-[62%] transition duration-500 group-hover:scale-105" />
-                  )}
-                </div>
-              )}
+          {CATEGORY_CARDS.map((card) => {
+            const cardImg =
+              tileImages[card.tile] ||
+              (card.label === "Men's Watches" ? "/images/univers-point-slim-stand.jpg" : null);
+
+            return (
+              <Link
+                key={card.label}
+                href={card.href}
+                className={`group relative flex aspect-[4/3.4] flex-col justify-end overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br ${card.bg} shadow-xl shadow-black/20`}
+              >
+                {cardImg ? (
+                  <Image
+                    src={cardImg}
+                    alt={card.label}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                    className="object-cover opacity-90 transition duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-x-0 top-0 flex h-[68%] items-center justify-center">
+                    {card.kind === "watch" ? (
+                      <WatchArt tone={card.tone} className="h-[92%] w-auto transition duration-500 group-hover:scale-105" />
+                    ) : (
+                      <GlassesArt tone={card.tone} className="w-[62%] transition duration-500 group-hover:scale-105" />
+                    )}
+                  </div>
+                )}
 
               <div className="relative flex items-end justify-between bg-gradient-to-t from-black/85 via-black/55 to-transparent px-4 pb-3.5 pt-8">
                 <div>
@@ -208,7 +215,8 @@ export default async function HomePage() {
                 </span>
               </div>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -260,6 +268,68 @@ export default async function HomePage() {
               Our best sellers will appear here soon.
             </p>
           )}
+        </div>
+      </section>
+
+      {/* Men's Watches — local product showcase */}
+      <section className="bg-paper px-4 sm:px-6 lg:px-8 py-14" aria-labelledby="mens-watches-gallery">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex items-end justify-between gap-4 mb-8">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-gold-deep">
+                Timepieces
+              </p>
+              <h2 id="mens-watches-gallery" className="mt-1 font-serif text-3xl font-semibold text-ink">
+                Men's Watches
+              </h2>
+            </div>
+            <Link
+              href="/collections/watches?gender=men"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-ink transition hover:text-gold-deep"
+            >
+              View All <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-5">
+            {[
+              { id: "local-watch-feiwo",    src: "/images/feiwo-blue-dial-twotone.jpg",  name: "FEIWO Aura Dial – Blue Royal",    price: 12499 },
+              { id: "local-watch-led-gold", src: "/images/led-gold-digital-watch.jpg",   name: "LED Gold Digital Watch",          price: 8999  },
+              { id: "local-watch-led-col",  src: "/images/led-gold-digital-collage.jpg", name: "LED Gold – Multi View",           price: 9499  },
+              { id: "local-watch-matturi",  src: "/images/matturi-silver-led-watch.jpg", name: "Matturi Silver LED – 3Time",      price: 9999  },
+              { id: "local-watch-black",    src: "/images/black-dial-gold-accent.jpg",   name: "Black Dial Gold Accent",         price: 11499 },
+            ].map((watch) => (
+              <div
+                key={watch.id}
+                className="group flex flex-col overflow-hidden rounded-xl border border-sand/80 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-gold/50 hover:shadow-lg"
+              >
+                <Link href="/collections/watches?gender=men" className="relative block aspect-square w-full overflow-hidden bg-stone-50">
+                  <Image
+                    src={watch.src}
+                    alt={watch.name}
+                    fill
+                    sizes="(min-width: 1024px) 20vw, (min-width: 640px) 50vw, 50vw"
+                    className="object-cover transition duration-500 group-hover:scale-105"
+                  />
+                </Link>
+                <div className="flex flex-1 flex-col gap-1 p-3 sm:p-4 text-center">
+                  <h3 className="line-clamp-2 min-h-[2.5rem] flex items-center justify-center text-xs font-medium leading-snug text-ink sm:text-sm">
+                    {watch.name}
+                  </h3>
+                  <p className="text-sm font-bold text-ink">Rs. {watch.price.toLocaleString()}</p>
+                  <div className="mt-auto pt-3">
+                    <AddToCartButton
+                      productId={watch.id}
+                      name={watch.name}
+                      price={watch.price}
+                      imageUrl={watch.src}
+                      inStock={true}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
