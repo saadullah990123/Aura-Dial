@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useSyncExternalStore } from "react";
 
 import { WatchArt } from "@/components/store/art";
+import { resolveProductId } from "@/lib/constants/legacy-products";
 import { formatPrice } from "@/lib/format";
 import { fetchJsonWithTimeout, RequestTimeoutError } from "@/lib/utils/fetch-json";
 import { computeDeliveryFee, type ShippingSettings } from "@/lib/shipping";
@@ -103,7 +104,7 @@ export function CheckoutForm({
           shippingAddress: String(data.get("shippingAddress") ?? "").trim(),
           notes: String(data.get("notes") ?? "").trim() || undefined,
           items: items.map((item) => ({
-            productId: item.productId,
+            productId: resolveProductId(item.productId),
             quantity: item.quantity,
           })),
         }),

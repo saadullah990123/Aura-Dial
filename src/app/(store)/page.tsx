@@ -329,11 +329,11 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
             {[
-              { id: "local-watch-feiwo",    imageUrl: "/images/feiwo-blue-dial-twotone.jpg",  name: "FEIWO Royal Blue Dial",           price: 12499, salePrice: 14999, slug: "feiwo-royal-blue", brand: "FEIWO", gender: "men" as const, inStock: true, categorySlug: "watches", isBestseller: true },
-              { id: "local-watch-led-gold", imageUrl: "/images/led-gold-digital-watch.jpg",   name: "LED Gold Digital Watch",          price: 8999,  salePrice: null, slug: "led-gold-digital", brand: "Aura Dial", gender: "men" as const, inStock: true, categorySlug: "watches" },
-              { id: "local-watch-led-col",  imageUrl: "/images/led-gold-digital-collage.jpg", name: "LED Gold Multi-Angle Edition",   price: 9499,  salePrice: null, slug: "led-gold-multi", brand: "Aura Dial", gender: "men" as const, inStock: true, categorySlug: "watches", isFeatured: true },
-              { id: "local-watch-matturi",  imageUrl: "/images/matturi-silver-led-watch.jpg", name: "Matturi Silver LED 3Time",       price: 9999,  salePrice: null, slug: "matturi-silver-led", brand: "Matturi", gender: "men" as const, inStock: true, categorySlug: "watches" },
-              { id: "local-watch-black",    imageUrl: "/images/black-dial-gold-accent.jpg",   name: "Black Dial Gold Accent Classic",  price: 11499, salePrice: 13500, slug: "black-dial-gold", brand: "Aura Dial", gender: "men" as const, inStock: true, categorySlug: "watches" },
+              { id: "c0a80101-0001-4000-8000-000000000001", imageUrl: "/images/feiwo-blue-dial-twotone.jpg",  name: "FEIWO Royal Blue Dial",           price: 14999, salePrice: 12499, slug: "feiwo-royal-blue", brand: "FEIWO", gender: "men" as const, inStock: true, categorySlug: "watches", isBestseller: true },
+              { id: "c0a80101-0002-4000-8000-000000000002", imageUrl: "/images/led-gold-digital-watch.jpg",   name: "LED Gold Digital Watch",          price: 8999,  salePrice: null, slug: "led-gold-digital", brand: "Aura Dial", gender: "men" as const, inStock: true, categorySlug: "watches" },
+              { id: "c0a80101-0003-4000-8000-000000000003", imageUrl: "/images/led-gold-digital-collage.jpg", name: "LED Gold Multi-Angle Edition",   price: 9499,  salePrice: null, slug: "led-gold-multi", brand: "Aura Dial", gender: "men" as const, inStock: true, categorySlug: "watches", isFeatured: true },
+              { id: "c0a80101-0004-4000-8000-000000000004", imageUrl: "/images/matturi-silver-led-watch.jpg", name: "Matturi Silver LED 3Time",       price: 9999,  salePrice: null, slug: "matturi-silver-led", brand: "Matturi", gender: "men" as const, inStock: true, categorySlug: "watches" },
+              { id: "c0a80101-0005-4000-8000-000000000005", imageUrl: "/images/black-dial-gold-accent.jpg",   name: "Black Dial Gold Accent Classic",  price: 13500, salePrice: 11499, slug: "black-dial-gold", brand: "Aura Dial", gender: "men" as const, inStock: true, categorySlug: "watches" },
             ].map((watch) => (
               <ProductCard key={watch.id} product={watch} />
             ))}

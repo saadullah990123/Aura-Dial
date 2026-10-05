@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
+import { LEGACY_PRODUCT_ID_MAP } from "@/lib/constants/legacy-products";
 import { createOrder, OrderError } from "@/lib/orders/create";
 import { getStoreSettings } from "@/lib/queries/store";
 import { getClientIp } from "@/lib/security/client-ip";
@@ -28,12 +29,33 @@ export async function POST(request: NextRequest) {
       return validationError("Invalid request body.");
     }
 
+    // Auto-map any legacy showcase product IDs in items before validation
+    if (
+      body &&
+      typeof body === "object" &&
+      "items" in body &&
+      Array.isArray((body as { items?: unknown[] }).items)
+    ) {
+      for (const item of (body as { items: Array<{ productId?: unknown }> }).items) {
+        if (item && typeof item === "object" && typeof item.productId === "string") {
+          const mappedId = LEGACY_PRODUCT_ID_MAP[item.productId];
+          if (mappedId) {
+            item.productId = mappedId;
+          }
+        }
+      }
+    }
+
     const parsed = orderInputSchema.safeParse(body);
     if (!parsed.success) {
       const fieldErrors: Record<string, string> = {};
       for (const issue of parsed.error.issues) {
         const key = String(issue.path[0] ?? "form");
-        fieldErrors[key] ??= issue.message;
+        if (key === "items") {
+          fieldErrors[key] ??= "One of the items in your cart is no longer valid. Please refresh your cart.";
+        } else {
+          fieldErrors[key] ??= issue.message;
+        }
       }
       return validationError("Please check the highlighted fields.", fieldErrors);
     }
