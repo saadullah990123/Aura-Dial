@@ -38,11 +38,6 @@ export async function POST(request: NextRequest) {
       return validationError("Please check the highlighted fields.", fieldErrors);
     }
 
-    // Bots fill the hidden field; pretend success without creating anything.
-    if (parsed.data.website) {
-      return NextResponse.json({ orderNumber: "AD-000000-XXXXX" });
-    }
-
     const ip = getClientIp(request);
     const [perIp, perPhone] = await Promise.all([
       enforceRateLimit({

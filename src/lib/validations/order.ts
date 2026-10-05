@@ -4,12 +4,9 @@ import { normalizePakistanPhone } from "@/lib/utils/phone";
 
 export const pakistanMobile = z
   .string()
-  .trim()
-  .min(10, "Enter a valid mobile number.")
-  .max(20, "Enter a valid mobile number.")
   .transform((value) => normalizePakistanPhone(value))
   .refine((value) => /^923\d{9}$/.test(value), {
-    message: "Enter a valid Pakistani mobile number, e.g. 0300 1234567.",
+    message: "Enter a valid Pakistani mobile number (e.g. 03495302487 or +923495302487).",
   });
 
 export const orderInputSchema = z.object({
@@ -27,7 +24,7 @@ export const orderInputSchema = z.object({
   shippingAddress: z
     .string()
     .trim()
-    .min(10, "Please enter your full delivery address.")
+    .min(5, "Please enter your full delivery address.")
     .max(300),
   city: z.string().trim().min(2, "Please enter your city.").max(80),
   notes: z
@@ -45,8 +42,8 @@ export const orderInputSchema = z.object({
     )
     .min(1, "Your cart is empty.")
     .max(20),
-  // Honeypot: real users never fill this in.
-  website: z.string().max(0).optional(),
+  // Optional field - never fails validation if autofilled by mobile browsers.
+  website: z.string().optional(),
 });
 
 export type OrderInput = z.infer<typeof orderInputSchema>;

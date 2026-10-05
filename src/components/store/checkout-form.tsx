@@ -14,8 +14,13 @@ import { useCartStore } from "@/store/cart";
 
 type FieldErrors = Record<string, string>;
 
-const inputClass =
-  "w-full rounded-lg border border-sand bg-white px-4 py-3 text-sm text-ink placeholder:text-stone-400 focus:border-gold-deep focus:outline-none focus:ring-2 focus:ring-gold/30";
+function getInputClass(hasError?: boolean) {
+  return `w-full rounded-lg border bg-white px-4 py-3 text-sm text-ink placeholder:text-stone-400 focus:outline-none focus:ring-2 transition-colors ${
+    hasError
+      ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+      : "border-sand focus:border-gold-deep focus:ring-gold/30"
+  }`;
+}
 
 function Field({
   label,
@@ -38,7 +43,7 @@ function Field({
       </label>
       {children}
       {error ? (
-        <p id={`${name}-error`} role="alert" className="mt-1.5 text-xs text-red-700">
+        <p id={`${name}-error`} role="alert" className="mt-1.5 text-xs font-medium text-red-600">
           {error}
         </p>
       ) : null}
@@ -91,13 +96,12 @@ export function CheckoutForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customerName: data.get("customerName"),
-          customerPhone: data.get("customerPhone"),
-          customerEmail: data.get("customerEmail") || undefined,
-          city: data.get("city"),
-          shippingAddress: data.get("shippingAddress"),
-          notes: data.get("notes") || undefined,
-          website: data.get("website") || undefined,
+          customerName: String(data.get("customerName") ?? "").trim(),
+          customerPhone: String(data.get("customerPhone") ?? "").trim(),
+          customerEmail: String(data.get("customerEmail") ?? "").trim() || undefined,
+          city: String(data.get("city") ?? "").trim(),
+          shippingAddress: String(data.get("shippingAddress") ?? "").trim(),
+          notes: String(data.get("notes") ?? "").trim() || undefined,
           items: items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
@@ -111,8 +115,21 @@ export function CheckoutForm({
         return;
       }
 
-      setErrors(body.details ?? {});
-      setFormError(body.error ?? "Something went wrong. Please try again.");
+      const fieldDetails = body.details ?? {};
+      setErrors(fieldDetails);
+
+      const firstErrorMsg = Object.values(fieldDetails)[0];
+      setFormError(firstErrorMsg || body.error || "Please check the highlighted fields.");
+
+      // On mobile, auto-scroll to the first invalid field so it is immediately visible
+      const firstErrorField = Object.keys(fieldDetails)[0];
+      if (firstErrorField) {
+        const targetElement = document.getElementById(firstErrorField);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
+          targetElement.focus();
+        }
+      }
     } catch (error) {
       // After a timeout we can't know whether the server already saved the order, so do NOT
       // invite a blind retry (that could create a duplicate order).
@@ -152,38 +169,74 @@ export function CheckoutForm({
 
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Full name" name="customerName" error={errors.customerName} required>
-            <input id="customerName" name="customerName" autoComplete="name" required maxLength={100}
-              aria-describedby={errors.customerName ? "customerName-error" : undefined} className={inputClass} />
+            <input
+              id="customerName"
+              name="customerName"
+              autoComplete="name"
+              required
+              maxLength={100}
+              aria-describedby={errors.customerName ? "customerName-error" : undefined}
+              className={getInputClass(!!errors.customerName)}
+            />
           </Field>
           <Field label="Mobile number" name="customerPhone" error={errors.customerPhone} required>
-            <input id="customerPhone" name="customerPhone" type="tel" inputMode="tel" autoComplete="tel"
-              placeholder="0300 1234567" required
-              aria-describedby={errors.customerPhone ? "customerPhone-error" : undefined} className={inputClass} />
+            <input
+              id="customerPhone"
+              name="customerPhone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="0349 5302487 or +92 349 5302487"
+              required
+              aria-describedby={errors.customerPhone ? "customerPhone-error" : undefined}
+              className={getInputClass(!!errors.customerPhone)}
+            />
           </Field>
         </div>
 
         <Field label="Email (optional)" name="customerEmail" error={errors.customerEmail}>
-          <input id="customerEmail" name="customerEmail" type="email" autoComplete="email" className={inputClass} />
+          <input
+            id="customerEmail"
+            name="customerEmail"
+            type="email"
+            autoComplete="email"
+            className={getInputClass(!!errors.customerEmail)}
+          />
         </Field>
 
         <Field label="City" name="city" error={errors.city} required>
-          <input id="city" name="city" autoComplete="address-level2" required maxLength={80} className={inputClass} />
+          <input
+            id="city"
+            name="city"
+            autoComplete="address-level2"
+            required
+            maxLength={80}
+            className={getInputClass(!!errors.city)}
+          />
         </Field>
 
         <Field label="Full address" name="shippingAddress" error={errors.shippingAddress} required>
-          <textarea id="shippingAddress" name="shippingAddress" rows={3} autoComplete="street-address" required
-            maxLength={300} placeholder="House / street / area" className={inputClass} />
+          <textarea
+            id="shippingAddress"
+            name="shippingAddress"
+            rows={3}
+            autoComplete="street-address"
+            required
+            maxLength={300}
+            placeholder="House / street / area"
+            className={getInputClass(!!errors.shippingAddress)}
+          />
         </Field>
 
         <Field label="Order notes (optional)" name="notes" error={errors.notes}>
-          <textarea id="notes" name="notes" rows={2} maxLength={500} className={inputClass} />
+          <textarea
+            id="notes"
+            name="notes"
+            rows={2}
+            maxLength={500}
+            className={getInputClass(!!errors.notes)}
+          />
         </Field>
-
-        {/* Honeypot: hidden from people, tempting to bots. */}
-        <div className="absolute -left-[9999px]" aria-hidden="true">
-          <label htmlFor="website">Website</label>
-          <input id="website" name="website" tabIndex={-1} autoComplete="off" />
-        </div>
       </div>
 
       <aside className="h-fit space-y-4 rounded-2xl border border-sand bg-white p-5 sm:p-7 lg:sticky lg:top-24">
