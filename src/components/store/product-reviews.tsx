@@ -468,6 +468,7 @@ export function ProductReviews({
                       src={rev.imageUrl}
                       alt="Customer review photo"
                       fill
+                      sizes="80px"
                       className="object-cover transition duration-300 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition group-hover:opacity-100">

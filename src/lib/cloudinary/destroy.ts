@@ -1,3 +1,5 @@
+import { env } from "@/lib/env";
+
 const ALLOWED_PREFIX = "time-and-vision/";
 
 /** Best-effort removal of uploaded images. Never throws. */
@@ -15,6 +17,6 @@ export async function destroyImages(publicIds: (string | null | undefined)[]) {
 
 /** Only accept image URLs that live in our own Cloudinary account. */
 export function isOwnCloudinaryUrl(url: string): boolean {
-  const cloud = process.env.CLOUDINARY_CLOUD_NAME;
+  const cloud = env.CLOUDINARY_CLOUD_NAME;
   return !!cloud && url.startsWith(`https://res.cloudinary.com/${cloud}/`);
 }

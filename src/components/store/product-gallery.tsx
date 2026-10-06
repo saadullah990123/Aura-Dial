@@ -17,12 +17,14 @@ export function ProductGallery({
   tone: ArtTone;
 }) {
   const [active, setActive] = useState(0);
+  const [failedUrls, setFailedUrls] = useState<Record<string, boolean>>({});
   const current = images[active];
+  const isFailed = current ? !!failedUrls[current.url] : false;
 
   return (
     <div className="space-y-3">
       <div className="relative aspect-square overflow-hidden rounded-2xl border border-sand bg-gradient-to-b from-white to-cream">
-        {current ? (
+        {current && !isFailed ? (
           <Image
             src={current.url}
             alt={current.alt || name}
@@ -30,6 +32,7 @@ export function ProductGallery({
             priority
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-contain p-6"
+            onError={() => setFailedUrls((prev) => ({ ...prev, [current.url]: true }))}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
