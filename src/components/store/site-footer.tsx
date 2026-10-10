@@ -93,7 +93,7 @@ export async function SiteFooter() {
 
   const address = settings.address?.trim() || "Pakistan";
 
-  const whatsappNumber = settings.whatsappPhone || "03419200326";
+  const whatsappNumber = settings.whatsappPhone || "03309311327";
   const whatsappUrl = `https://wa.me/${normalizePakistanPhone(whatsappNumber)}`;
 
   // Hardcoded Aura Dial social links — update these URLs to change the footer links

@@ -6,6 +6,7 @@ import "@fontsource-variable/playfair-display/wght-italic.css";
 import "./globals.css";
 
 import { ConnectionBanner } from "@/components/connection-banner";
+import { WhatsAppWidget } from "@/components/WhatsAppWidget";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className="antialiased">
         {children}
         <ConnectionBanner />
+        <WhatsAppWidget />
       </body>
     </html>
   );
