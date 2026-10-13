@@ -16,7 +16,13 @@ const emptyToNull = (value: unknown) =>
 export const imageListSchema = z
   .array(
     z.object({
-      url: z.string().url().max(500),
+      url: z
+        .string()
+        .max(500)
+        .refine(
+          (val) => val.startsWith("/") || z.string().url().safeParse(val).success,
+          { message: "Must be a valid URL or path." },
+        ),
       publicId: z.string().max(300).nullable().optional(),
       alt: z.string().max(200).nullable().optional(),
     }),

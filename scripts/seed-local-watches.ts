@@ -1,18 +1,26 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import * as dotenv from "dotenv";
+import { config } from "dotenv";
+import { resolve } from "node:path";
 import * as schema from "../src/db/schema/index";
 import { eq } from "drizzle-orm";
 
-dotenv.config();
+// Load environment variables safely
+config({ path: resolve(process.cwd(), ".env.local") });
+config({ path: resolve(process.cwd(), ".env") });
 
-const sql = neon(process.env.DATABASE_URL!);
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  console.error("FATAL: DATABASE_URL is not set.");
+  process.exit(1);
+}
+
+const sql = neon(databaseUrl);
 const db = drizzle(sql, { schema });
 
 export const LOCAL_WATCHES = [
   {
     id: "c0a80101-0001-4000-8000-000000000001",
-    legacyId: "local-watch-feiwo",
     name: "FEIWO Royal Blue Dial",
     slug: "feiwo-royal-blue",
     brand: "FEIWO",
@@ -27,7 +35,6 @@ export const LOCAL_WATCHES = [
   },
   {
     id: "c0a80101-0002-4000-8000-000000000002",
-    legacyId: "local-watch-led-gold",
     name: "LED Gold Digital Watch",
     slug: "led-gold-digital",
     brand: "Aura Dial",
@@ -42,7 +49,6 @@ export const LOCAL_WATCHES = [
   },
   {
     id: "c0a80101-0003-4000-8000-000000000003",
-    legacyId: "local-watch-led-col",
     name: "LED Gold Multi-Angle Edition",
     slug: "led-gold-multi",
     brand: "Aura Dial",
@@ -57,7 +63,6 @@ export const LOCAL_WATCHES = [
   },
   {
     id: "c0a80101-0004-4000-8000-000000000004",
-    legacyId: "local-watch-matturi",
     name: "Matturi Silver LED 3Time",
     slug: "matturi-silver-led",
     brand: "Matturi",
@@ -72,7 +77,6 @@ export const LOCAL_WATCHES = [
   },
   {
     id: "c0a80101-0005-4000-8000-000000000005",
-    legacyId: "local-watch-black",
     name: "Black Dial Gold Accent Classic",
     slug: "black-dial-gold",
     brand: "Aura Dial",
@@ -88,80 +92,105 @@ export const LOCAL_WATCHES = [
 ];
 
 async function seed() {
-  console.log("Seeding local showcase watches...");
-  
-  // Find watches category
-  const [cat] = await db
+  console.log("Safe Idempotent Seeding: Showcase Watches...");
+
+  // 1. Resolve watches category safely
+  const [existingCat] = await db
     .select()
     .from(schema.categories)
     .where(eq(schema.categories.slug, "watches"))
     .limit(1);
 
-  const categoryId = cat?.id ?? "379a41ab-bd87-4716-9367-3f41a238cff4";
-
-  for (const item of LOCAL_WATCHES) {
-    console.log(`Inserting/Updating product: ${item.name} (${item.id})`);
-    
-    await db
-      .insert(schema.products)
+  let categoryId = existingCat?.id;
+  if (!categoryId) {
+    console.log("Category 'watches' not found. Creating category...");
+    const [createdCat] = await db
+      .insert(schema.categories)
       .values({
-        id: item.id,
-        name: item.name,
-        slug: item.slug,
-        categoryId: categoryId,
-        brand: item.brand,
-        gender: item.gender,
-        description: item.description,
-        price: item.price,
-        salePrice: item.salePrice,
-        stockQuantity: item.stockQuantity,
-        isFeatured: item.isFeatured,
-        isBestseller: item.isBestseller,
+        name: "Watches",
+        slug: "watches",
+        description: "Curated luxury, dress, sports, and casual timepieces for men and women.",
         isActive: true,
+        sortOrder: 1,
       })
-      .onConflictDoUpdate({
-        target: schema.products.id,
-        set: {
-          name: item.name,
-          slug: item.slug,
-          categoryId: categoryId,
-          brand: item.brand,
-          gender: item.gender,
-          description: item.description,
-          price: item.price,
-          salePrice: item.salePrice,
-          stockQuantity: item.stockQuantity,
-          isFeatured: item.isFeatured,
-          isBestseller: item.isBestseller,
-          isActive: true,
-          updatedAt: new Date(),
-        },
-      });
+      .returning();
+    categoryId = createdCat.id;
+  }
+  console.log(`Using Watches category ID: ${categoryId}`);
 
-    // Also insert or update product primary image
-    const [existingImage] = await db
+  let insertedCount = 0;
+  let skippedCount = 0;
+
+  // 2. Insert items idempotently without overwriting any live edits
+  for (const item of LOCAL_WATCHES) {
+    const [existingById] = await db
       .select()
-      .from(schema.productImages)
-      .where(eq(schema.productImages.productId, item.id))
+      .from(schema.products)
+      .where(eq(schema.products.id, item.id))
       .limit(1);
 
-    if (!existingImage) {
-      await db.insert(schema.productImages).values({
-        productId: item.id,
-        url: item.imageUrl,
-        altText: item.name,
-        isPrimary: true,
-        sortOrder: 0,
-      });
-    } else {
-      await db
-        .update(schema.productImages)
-        .set({ url: item.imageUrl, altText: item.name, isPrimary: true })
-        .where(eq(schema.productImages.id, existingImage.id));
+    const [existingBySlug] = await db
+      .select()
+      .from(schema.products)
+      .where(eq(schema.products.slug, item.slug))
+      .limit(1);
+
+    const existing = existingById || existingBySlug;
+
+    if (existing) {
+      console.log(`[SKIP] Product already exists: "${existing.name}" (id: ${existing.id}, slug: ${existing.slug}). Preserving live data.`);
+      skippedCount++;
+
+      // Verify that at least one image exists for this product
+      const [existingImage] = await db
+        .select()
+        .from(schema.productImages)
+        .where(eq(schema.productImages.productId, existing.id))
+        .limit(1);
+
+      if (!existingImage) {
+        console.log(`  -> Adding primary image for "${existing.name}"`);
+        await db.insert(schema.productImages).values({
+          productId: existing.id,
+          url: item.imageUrl,
+          altText: existing.name,
+          isPrimary: true,
+          sortOrder: 0,
+        });
+      }
+      continue;
     }
+
+    console.log(`[INSERT] Inserting: "${item.name}" (id: ${item.id}, slug: ${item.slug})`);
+    await db.insert(schema.products).values({
+      id: item.id,
+      name: item.name,
+      slug: item.slug,
+      categoryId: categoryId,
+      brand: item.brand,
+      gender: item.gender,
+      description: item.description,
+      price: item.price,
+      salePrice: item.salePrice,
+      stockQuantity: item.stockQuantity,
+      isFeatured: item.isFeatured,
+      isBestseller: item.isBestseller,
+      isActive: true,
+    });
+
+    await db.insert(schema.productImages).values({
+      productId: item.id,
+      url: item.imageUrl,
+      altText: item.name,
+      isPrimary: true,
+      sortOrder: 0,
+    });
+
+    insertedCount++;
+    console.log(`  -> Successfully inserted "${item.name}"`);
   }
 
-  console.log("Successfully seeded 5 showcase watches!");
+  console.log(`\nSeeding completed safely: ${insertedCount} inserted, ${skippedCount} preserved.`);
   process.exit(0);
 }
 

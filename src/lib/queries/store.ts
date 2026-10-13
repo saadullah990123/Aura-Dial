@@ -149,6 +149,7 @@ export const getCategories = cache(async (): Promise<StoreCategory[]> => {
 });
 
 type ProductFilters = {
+  ids?: string[];
   bestsellersOnly?: boolean;
   categorySlug?: string;
   gender?: "men" | "women" | "unisex";
@@ -168,6 +169,9 @@ export async function getProducts(
 
       const conditions = [eq(products.isActive, true)];
 
+      if (filters.ids && filters.ids.length > 0) {
+        conditions.push(inArray(products.id, filters.ids));
+      }
       if (filters.bestsellersOnly) {
         conditions.push(eq(products.isBestseller, true));
       }

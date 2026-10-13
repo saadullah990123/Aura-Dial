@@ -114,7 +114,7 @@ export async function saveProductAction(
       for (const row of stored) knownUrls.add(row.url);
     }
     const upload = await verifyNewUploads(
-      data.images.filter((image) => !knownUrls.has(image.url)),
+      data.images.filter((image) => !knownUrls.has(image.url) && !image.url.startsWith("/")),
       PRODUCT_UPLOAD_PREFIX,
     );
     if (!upload.ok) return { error: upload.message };

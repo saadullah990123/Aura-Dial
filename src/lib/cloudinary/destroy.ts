@@ -15,8 +15,9 @@ export async function destroyImages(publicIds: (string | null | undefined)[]) {
   }
 }
 
-/** Only accept image URLs that live in our own Cloudinary account. */
+/** Only accept image URLs that live in our own Cloudinary account or local store assets. */
 export function isOwnCloudinaryUrl(url: string): boolean {
+  if (url.startsWith("/images/") || url.startsWith("/")) return true;
   const cloud = env.CLOUDINARY_CLOUD_NAME;
   return !!cloud && url.startsWith(`https://res.cloudinary.com/${cloud}/`);
 }
