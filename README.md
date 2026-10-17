@@ -50,23 +50,26 @@ Public storefront with product catalogs, shopping cart, instant checkout, order 
 
 ### 🛍️ Storefront
 
-- **Product Catalog & Collections** — Curated categories for luxury watches and eyewear with advanced filtering, sorting, and best-seller badges
-- **Interactive Product Details** — High-resolution image galleries, product variants, and customer reviews
-- **Cart & Wishlist Drawers** — Persistent side-drawers for quick cart inspection and wishlist saving
-- **Streamlined Checkout** — Fast Cash-on-Delivery (COD) ordering flow with secure client validation and server-side verification
-- **Order Tracking** — Real-time package status lookups using order ID and phone numbers
-- **WhatsApp Support Widget** — Floating interactive WhatsApp support button for fast customer inquiries
-- **Responsive Design** — Fully optimized user experience across mobile, tablet, and desktop devices
+| Feature | Description |
+|:--|:--|
+| 🗂️ **Product Catalog & Collections** | Curated categories for luxury watches and eyewear with advanced filtering, sorting, and best-seller badges |
+| 🖼️ **Interactive Product Details** | High-resolution image galleries, product variants, and customer reviews |
+| 🛒 **Cart & Wishlist Drawers** | Persistent side-drawers for quick cart inspection and wishlist saving |
+| 💳 **Streamlined Checkout** | Fast Cash-on-Delivery (COD) flow with client validation and server-side verification |
+| 📦 **Order Tracking** | Real-time package status lookups using order ID and phone number |
+| 💬 **WhatsApp Support Widget** | Floating WhatsApp button for fast customer inquiries |
+| 📱 **Responsive Design** | Fully optimized across mobile, tablet, and desktop |
 
 ### 🔐 Admin Dashboard
 
-- **Executive Dashboard** — At-a-glance performance overview and live sales metrics
-- **Order Management** — Comprehensive order processing workflow with automated updates and status changes
-- **Product Management** — Full CRUD control for items, inventory tiers, pricing, and category alignments
-- **Media Management** — Cloud-backed image management via Cloudinary integration
-- **Store Customization** — Global configurations, banner options, policy text managers, and account security controls
+| Feature | Description |
+|:--|:--|
+| 📊 **Executive Dashboard** | At-a-glance performance overview and live sales metrics |
+| 🧾 **Order Management** | Complete order workflow with automated updates and status changes |
+| 🏷️ **Product Management** | Full CRUD for items, inventory tiers, pricing, and categories |
+| ☁️ **Media Management** | Cloud-backed image management via Cloudinary |
+| ⚙️ **Store Customization** | Global settings, banners, policy text editor, and account security controls |
 
----
 
 ## 🛠️ Tech Stack
 
@@ -470,9 +473,16 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 <img width="1917" height="970" alt="Admin Dashboard 3" src="https://github.com/user-attachments/assets/95121e8a-f7f1-4085-be58-1541baa16ed4" />
 
----
+### 📄 License
+
+This project is privately owned by Aura Dial. All rights reserved © 2026
+
+
+
 
 <div align="center">
+
+Designed & Developed with ❤️ by **Saad Ullah** for **Aura Dial**
 
 **⭐ If you like this project, give it a star on GitHub! ⭐**
 
