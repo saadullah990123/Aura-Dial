@@ -44,7 +44,7 @@ export function WhatsAppWidget() {
       <div className="relative flex items-center justify-center">
         <span className="absolute -inset-1.5 rounded-full bg-[#25D366]/40 animate-ping pointer-events-none" />
         <a
-          href="https://wa.me/+923309311327?text=Hi%20Aura%20Dial%2C%20I%20have%20a%20question%20about%20an%20order."
+          href="https://wa.me/923309311327?text=Hi%20Aura%20Dial%2C%20I%20have%20a%20question%20about%20an%20order."
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Order via WhatsApp"
