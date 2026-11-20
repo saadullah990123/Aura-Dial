@@ -3,19 +3,21 @@
 import { Heart, Home, LayoutGrid, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import { useWishlistStore } from "@/store/wishlist";
+
+const emptySubscribe = () => () => {};
 
 export function MobileBottomNav() {
   const pathname = usePathname();
   const wishlistItems = useWishlistStore((state) => state.items);
   const openWishlist = useWishlistStore((state) => state.open);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   const wishlistCount = mounted ? wishlistItems.length : 0;
 

@@ -80,7 +80,7 @@ export function WishlistDrawer() {
             </div>
             <p className="mt-4 font-serif text-xl font-medium text-white">Your wishlist is empty</p>
             <p className="mt-1.5 max-w-xs text-sm text-stone-400">
-              Save your favorite luxury watches and glasses to view them anytime.
+              Save your favorite luxury watches, perfumes, and custom styles to view them anytime.
             </p>
             <button
               type="button"

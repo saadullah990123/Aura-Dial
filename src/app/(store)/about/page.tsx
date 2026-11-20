@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "About" };
 
 const FALLBACK = {
   title: "About Aura Dial",
-  body: "Aura Dial brings together two things people wear every day: watches and glasses. Our collection is chosen for style, comfort and value, from classic timepieces to modern frames.\n\nWe deliver across Pakistan. Questions about a product? Get in touch with us.",
+  body: "Aura Dial brings together premium watches, luxury perfumes, and customized bespoke timepieces. Our collection is chosen for style, sophistication and value, from classic dials to signature scents.\n\nWe deliver across Pakistan with cash on delivery. Questions about a product? Get in touch with us.",
 };
 
 export default async function AboutPage() {

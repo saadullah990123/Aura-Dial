@@ -347,21 +347,29 @@ export async function getAllProductSlugs(): Promise<
 export async function getCollectionTileImages(): Promise<
   Record<string, string | null>
 > {
-  const tiles = [
+  const genderTiles = [
     ["watches", "men"],
     ["watches", "women"],
+    ["perfume", "men"],
+    ["perfume", "women"],
     ["glasses", "men"],
     ["glasses", "women"],
   ] as const;
 
+  const categoryOnlyTiles = ["perfume", "customize-watch"] as const;
+
   const result: Record<string, string | null> = {};
-  await Promise.all(
-    tiles.map(async ([category, gender]) => {
+  await Promise.all([
+    ...genderTiles.map(async ([category, gender]) => {
       const list = await getProducts({ categorySlug: category, gender, limit: 12 });
       result[`${category}:${gender}`] =
-        list.find((entry) => entry.imageUrl)?.imageUrl ?? null;
+        list.find((entry) => entry.imageUrl && !entry.imageUrl.includes("ChatGPT Image"))?.imageUrl ?? null;
     }),
-  );
+    ...categoryOnlyTiles.map(async (category) => {
+      const list = await getProducts({ categorySlug: category, limit: 12 });
+      result[category] = list.find((entry) => entry.imageUrl && !entry.imageUrl.includes("ChatGPT Image"))?.imageUrl ?? null;
+    }),
+  ]);
   return result;
 }
 

@@ -38,7 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function toneFor(gender: string | null, glasses: boolean): ArtTone {
+function toneFor(gender: string | null, glasses: boolean, categorySlug?: string | null): ArtTone {
+  if (categorySlug === "perfume") return "gold";
   if (gender === "women") return "rose";
   if (gender === "men") return glasses ? "black" : "silver";
   return "gold";
@@ -58,9 +59,17 @@ export default async function ProductPage({ params }: Props) {
   ]);
 
   const isGlasses = product.categorySlug === "glasses";
+  const categorySlug = product.categorySlug || "watches";
   const effectivePrice = product.salePrice ?? product.price;
   const onSale = product.salePrice !== null && product.salePrice < product.price;
-  const categoryLabel = isGlasses ? "Glasses" : "Watches";
+  const categoryLabel =
+    categorySlug === "perfume"
+      ? "Perfume"
+      : categorySlug === "customize-watch"
+      ? "Customize Watch"
+      : isGlasses
+      ? "Glasses"
+      : "Watches";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -99,7 +108,7 @@ export default async function ProductPage({ params }: Props) {
       <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-1.5 text-xs text-stone-500">
         <Link href="/" className="hover:text-ink">Home</Link>
         <ChevronRight className="size-3" />
-        <Link href={`/collections/${isGlasses ? "glasses" : "watches"}`} className="hover:text-ink">
+        <Link href={`/collections/${categorySlug}`} className="hover:text-ink">
           {categoryLabel}
         </Link>
         <ChevronRight className="size-3" />
@@ -111,7 +120,8 @@ export default async function ProductPage({ params }: Props) {
           images={product.images}
           name={product.name}
           isGlasses={isGlasses}
-          tone={toneFor(product.gender, isGlasses)}
+          categorySlug={product.categorySlug}
+          tone={toneFor(product.gender, isGlasses, product.categorySlug)}
         />
 
         <div>

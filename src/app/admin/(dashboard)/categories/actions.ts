@@ -12,7 +12,7 @@ import { createSlug } from "@/lib/utils/slug";
 import { type ActionState, categorySchema, zodFieldErrors } from "@/lib/validations/admin";
 
 /** The storefront links to these directly, so they can't be removed. */
-const PROTECTED_SLUGS = new Set(["watches", "glasses"]);
+const PROTECTED_SLUGS = new Set(["watches", "perfume", "customize-watch", "glasses"]);
 
 export async function saveCategoryAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const admin = await requireAdminOrRedirect();

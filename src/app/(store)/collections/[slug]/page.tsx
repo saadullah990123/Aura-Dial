@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { ProductCard } from "@/components/store/product-card";
@@ -27,11 +27,21 @@ function parseGender(value: string | undefined): Gender | undefined {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  // Resolve the category here so unknown slugs return a real HTTP 404, not a "soft 404".
-  if (slug !== "all" && !(await getCategories()).some((entry) => entry.slug === slug)) {
+  if (slug === "glasses") {
+    return { title: "Perfume | Aura Dial" };
+  }
+  const knownCoreSlugs = new Set(["all", "watches", "perfume", "customize-watch"]);
+  if (!knownCoreSlugs.has(slug) && !(await getCategories()).some((entry) => entry.slug === slug)) {
     notFound();
   }
-  const title = slug === "all" ? "All Products" : slug.charAt(0).toUpperCase() + slug.slice(1);
+  const title =
+    slug === "all"
+      ? "All Products"
+      : slug === "customize-watch"
+      ? "Customize Watch"
+      : slug === "perfume"
+      ? "Perfume"
+      : slug.charAt(0).toUpperCase() + slug.slice(1);
   return { title: `${title} | Aura Dial` };
 }
 
@@ -41,8 +51,26 @@ export default async function CollectionPage({ params, searchParams }: PageProps
     searchParams,
   ]);
 
+  // Backward compatibility: if an old link or bookmark visits /collections/glasses, cleanly redirect to /collections/perfume
+  if (slug === "glasses") {
+    const qStr = new URLSearchParams();
+    if (genderParam) qStr.set("gender", genderParam);
+    if (q) qStr.set("q", q);
+    const qs = qStr.toString();
+    redirect(`/collections/perfume${qs ? `?${qs}` : ""}`);
+  }
+
   const categories = await getCategories();
-  const category = categories.find((entry) => entry.slug === slug);
+  let category = categories.find((entry) => entry.slug === slug);
+
+  // Fallback virtual category metadata if DB hasn't been seeded yet
+  if (!category && (slug === "perfume" || slug === "customize-watch")) {
+    category = {
+      id: slug,
+      slug,
+      name: slug === "perfume" ? "Perfume" : "Customize Watch",
+    };
+  }
 
   if (slug !== "all" && !category) {
     notFound();
@@ -145,8 +173,12 @@ async function Results({
       </p>
       {products.length > 0 ? (
         <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products.map((product, index) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              priority={index < 4}
+            />
           ))}
         </div>
       ) : (
@@ -169,7 +201,7 @@ async function Results({
               name="q"
               type="search"
               defaultValue={search ?? ""}
-              placeholder="Search watches and glasses"
+              placeholder="Search watches, perfumes, and custom styles"
               aria-label="Search products"
               className="w-full rounded-md border border-sand px-4 py-2.5 text-sm focus:border-gold-deep focus:outline-none focus:ring-2 focus:ring-gold/30"
             />

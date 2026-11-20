@@ -3,7 +3,7 @@
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { WatchArt } from "@/components/store/art";
 import { WhatsAppIcon } from "@/components/store/brand-icons";
@@ -33,6 +33,12 @@ export function CartDrawer({
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
 
+  // Defer mounting until the drawer has been opened at least once to minimize hydration/TBT
+  const [hasEverOpened, setHasEverOpened] = useState(false);
+  if (isOpen && !hasEverOpened) {
+    setHasEverOpened(true);
+  }
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -48,6 +54,10 @@ export function CartDrawer({
       document.body.style.overflow = "";
     };
   }, [isOpen, close]);
+
+  if (!isOpen && !hasEverOpened) {
+    return null;
+  }
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -107,7 +117,7 @@ export function CartDrawer({
             <ShoppingBag className="size-10 text-gold-deep" strokeWidth={1.4} />
             <p className="font-serif text-lg text-ink">Your cart is empty</p>
             <p className="text-sm text-stone-500">
-              Add a watch or a pair of glasses to get started.
+              Add a watch, perfume, or custom timepiece to get started.
             </p>
           </div>
         ) : (

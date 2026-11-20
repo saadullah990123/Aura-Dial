@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; page?: string; saved?: string; deleted?: string }>;
+  searchParams: Promise<{ q?: string; page?: string; saved?: string; deleted?: string; error?: string }>;
 }) {
   await requireAdminOrRedirect();
   const sp = await searchParams;
@@ -37,6 +37,7 @@ export default async function AdminProductsPage({
 
       {sp.saved ? <p role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">Product saved.</p> : null}
       {sp.deleted ? <p role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">Product deleted.</p> : null}
+      {sp.error === "delete-failed" ? <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">Could not delete product. Please try again.</p> : null}
 
       <form className="mb-4 flex gap-2" role="search">
         <input name="q" defaultValue={q} placeholder="Search by name or brand" aria-label="Search products"

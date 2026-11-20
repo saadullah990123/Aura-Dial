@@ -8,7 +8,9 @@ export const SAMPLE_DESCRIPTION = "Sample listing: replace this with your real p
 
 export const CATEGORY_DEFS: Record<string, { name: string; sortOrder: number }> = {
   watches: { name: "Watches", sortOrder: 1 },
-  glasses: { name: "Glasses", sortOrder: 2 },
+  perfume: { name: "Perfume", sortOrder: 2 },
+  "customize-watch": { name: "Customize Watch", sortOrder: 3 },
+  glasses: { name: "Glasses", sortOrder: 4 },
 };
 
 /** Returns a list of problems; empty means the data is safe to import. */

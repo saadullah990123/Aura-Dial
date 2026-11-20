@@ -29,6 +29,26 @@ export function ImageUploader({
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [manualUrl, setManualUrl] = useState("");
+
+  function handleAddManualUrl(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = manualUrl.trim();
+    if (!trimmed) return;
+    if (!trimmed.startsWith("/") && !trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+      setError("Please enter a valid path starting with / or https://");
+      return;
+    }
+    if (value.length >= max) {
+      setError(`You can add up to ${max} images.`);
+      return;
+    }
+    setError(null);
+    onChange([...value, { url: trimmed, publicId: null }]);
+    setManualUrl("");
+    setShowUrlInput(false);
+  }
 
   async function uploadOne(file: File): Promise<UploadedImage> {
     const signResponse = await fetch("/api/admin/uploads/sign", {
@@ -125,7 +145,41 @@ export function ImageUploader({
         onChange={(e) => onFiles(e.target.files)} />
 
       {error ? <p role="alert" className="mt-2 text-xs text-red-700">{error}</p> : null}
-      <p className="mt-2 text-xs text-stone-500">JPG, PNG, WebP or AVIF, up to 5 MB each.</p>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-stone-500">
+        <p>JPG, PNG, WebP or AVIF, up to 5 MB each.</p>
+        <button
+          type="button"
+          onClick={() => setShowUrlInput(!showUrlInput)}
+          className="font-medium text-amber-700 hover:text-amber-800 hover:underline"
+        >
+          {showUrlInput ? "Cancel URL input" : "+ Add image via URL / local path"}
+        </button>
+      </div>
+
+      {showUrlInput ? (
+        <div className="mt-2.5 flex gap-2">
+          <input
+            type="text"
+            value={manualUrl}
+            onChange={(e) => setManualUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddManualUrl(e);
+              }
+            }}
+            placeholder="e.g. /images/girlswatch1.jpg or https://res.cloudinary.com/..."
+            className="flex-1 rounded-lg border border-stone-300 px-3 py-1.5 text-xs text-stone-900 focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-500"
+          />
+          <button
+            type="button"
+            onClick={handleAddManualUrl}
+            className="rounded-lg bg-stone-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-700"
+          >
+            Add
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

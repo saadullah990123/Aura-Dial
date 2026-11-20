@@ -3,17 +3,19 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { GlassesArt, WatchArt, type ArtTone } from "@/components/store/art";
+import { CustomWatchArt, GlassesArt, PerfumeArt, WatchArt, type ArtTone } from "@/components/store/art";
 
 export function ProductGallery({
   images,
   name,
   isGlasses,
+  categorySlug,
   tone,
 }: {
   images: { url: string; alt: string | null }[];
   name: string;
-  isGlasses: boolean;
+  isGlasses?: boolean;
+  categorySlug?: string | null;
   tone: ArtTone;
 }) {
   const [active, setActive] = useState(0);
@@ -30,13 +32,17 @@ export function ProductGallery({
             alt={current.alt || name}
             fill
             priority
-            sizes="(min-width: 1024px) 50vw, 100vw"
+            sizes="(min-width: 1280px) 590px, (min-width: 1024px) 50vw, (min-width: 640px) 90vw, 100vw"
             className="object-contain p-6"
             onError={() => setFailedUrls((prev) => ({ ...prev, [current.url]: true }))}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
-            {isGlasses ? (
+            {categorySlug === "perfume" ? (
+              <PerfumeArt tone={tone} className="h-[75%] w-auto" />
+            ) : categorySlug === "customize-watch" ? (
+              <CustomWatchArt tone={tone} className="h-[78%] w-auto" />
+            ) : isGlasses ? (
               <GlassesArt tone={tone} className="w-3/5" />
             ) : (
               <WatchArt tone={tone} className="h-[80%] w-auto" />

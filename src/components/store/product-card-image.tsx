@@ -3,22 +3,30 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { GlassesArt, WatchArt, type ArtTone } from "@/components/store/art";
+import { CustomWatchArt, GlassesArt, PerfumeArt, WatchArt, type ArtTone } from "@/components/store/art";
 
 interface ProductCardImageProps {
   src: string | null | undefined;
   alt: string;
-  isGlasses: boolean;
+  isGlasses?: boolean;
+  categorySlug?: string | null;
   tone: ArtTone;
   onSale?: boolean;
   inStock?: boolean;
+  priority?: boolean;
+  loading?: "eager" | "lazy";
+  sizes?: string;
 }
 
 export function ProductCardImage({
   src,
   alt,
   isGlasses,
+  categorySlug,
   tone,
+  priority = false,
+  loading,
+  sizes,
 }: ProductCardImageProps) {
   const [hasError, setHasError] = useState(false);
 
@@ -31,7 +39,12 @@ export function ProductCardImage({
           src={src}
           alt={alt}
           fill
-          sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 50vw"
+          priority={priority}
+          loading={loading ?? (priority ? "eager" : "lazy")}
+          sizes={
+            sizes ||
+            "(min-width: 1280px) 290px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 50vw"
+          }
           className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
           onError={() => setHasError(true)}
         />
@@ -42,7 +55,11 @@ export function ProductCardImage({
 
           {/* Luxury artistic emblem */}
           <div className="relative z-10 flex h-full w-full items-center justify-center transition-transform duration-500 ease-out group-hover:scale-105">
-            {isGlasses ? (
+            {categorySlug === "perfume" ? (
+              <PerfumeArt tone={tone} className="h-[80%] w-auto drop-shadow-md" />
+            ) : categorySlug === "customize-watch" ? (
+              <CustomWatchArt tone={tone} className="h-[82%] w-auto drop-shadow-lg" />
+            ) : isGlasses ? (
               <GlassesArt tone={tone} className="w-3/4 drop-shadow-md" />
             ) : (
               <div className="relative flex h-full w-full items-center justify-center">

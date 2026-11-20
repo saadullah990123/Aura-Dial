@@ -12,8 +12,8 @@ import { useCartStore } from "@/store/cart";
 type Props = {
   storeName: string;
   whatsappUrl: string | null;
-  instagramUrl: string | null;
-  tiktokUrl: string | null;
+  instagramUrl?: string | null;
+  tiktokUrl?: string | null;
 };
 
 const DROPDOWNS = [
@@ -27,12 +27,12 @@ const DROPDOWNS = [
     ],
   },
   {
-    label: "Glasses",
-    slug: "glasses",
+    label: "Perfume",
+    slug: "perfume",
     links: [
-      { label: "Men's Glasses", href: "/collections/glasses?gender=men" },
-      { label: "Women's Glasses", href: "/collections/glasses?gender=women" },
-      { label: "All Glasses", href: "/collections/glasses" },
+      { label: "Men's Perfume", href: "/collections/perfume?gender=men" },
+      { label: "Women's Perfume", href: "/collections/perfume?gender=women" },
+      { label: "All Perfumes", href: "/collections/perfume" },
     ],
   },
 ];
@@ -40,8 +40,6 @@ const DROPDOWNS = [
 export function HeaderClient({
   storeName,
   whatsappUrl,
-  instagramUrl,
-  tiktokUrl,
 }: Props) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -102,7 +100,7 @@ export function HeaderClient({
               Aura Dial
             </span>
             <span className="mt-1 text-[7px] sm:text-[8px] font-medium uppercase tracking-[0.28em] text-stone-400">
-              Watches &amp; Glasses
+              Watches &amp; Perfume
             </span>
           </span>
         </Link>
@@ -135,6 +133,9 @@ export function HeaderClient({
             </div>
           ))}
 
+          <Link href="/collections/customize-watch" className={linkClass}>
+            Customize Watch
+          </Link>
           <Link href="/about" className={linkClass}>
             About
           </Link>
@@ -197,7 +198,7 @@ export function HeaderClient({
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search watches and glasses..."
+              placeholder="Search watches, perfumes, and custom styles..."
               aria-label="Search products"
               className="w-full rounded-full border border-white/10 bg-ink px-5 py-2.5 text-sm text-white outline-none placeholder:text-stone-500 focus:border-gold"
             />
@@ -218,8 +219,8 @@ export function HeaderClient({
               { label: "Home", href: "/" },
               { label: "Men's Watches", href: "/collections/watches?gender=men" },
               { label: "Women's Watches", href: "/collections/watches?gender=women" },
-              { label: "Men's Glasses", href: "/collections/glasses?gender=men" },
-              { label: "Women's Glasses", href: "/collections/glasses?gender=women" },
+              { label: "Perfume", href: "/collections/perfume" },
+              { label: "Customize Watch", href: "/collections/customize-watch" },
               { label: "About", href: "/about" },
               { label: "Contact", href: "/contact" },
               { label: "Track Order", href: "/track-order" },

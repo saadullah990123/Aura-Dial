@@ -2,8 +2,11 @@ import { notFound } from "next/navigation";
 
 import { PageHeader } from "@/components/admin/page-header";
 import { ProductForm } from "@/components/admin/product-form";
+import { ConfirmButton } from "@/components/admin/ui";
 import { requireAdminOrRedirect } from "@/lib/auth/admin-action";
 import { categoryOptions, getAdminProduct } from "@/lib/queries/admin";
+
+import { deleteProductAction } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +21,18 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
   return (
     <>
-      <PageHeader title="Edit product" description={product.name} />
+      <PageHeader
+        title="Edit product"
+        description={product.name}
+        action={
+          <form action={deleteProductAction}>
+            <input type="hidden" name="id" value={product.id} />
+            <ConfirmButton message={`Delete "${product.name}"? This can't be undone.`}>
+              Delete product
+            </ConfirmButton>
+          </form>
+        }
+      />
       <div className="max-w-3xl">
         <ProductForm
           categories={categories}

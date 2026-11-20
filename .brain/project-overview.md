@@ -1,4 +1,4 @@
-﻿# Project Overview: Aura Dial
+# Project Overview: Aura Dial
 ## Tech Stack
 - Framework: Next.js 14+ (App Router)
 - Database: Neon Postgres + Drizzle ORM
@@ -6,7 +6,7 @@
 - Styling: Tailwind CSS
 
 ## Architecture & Features
-- Customer E-commerce Storefront (Watches & Glasses)
+- Customer E-commerce Storefront (Watches, Perfume & Customize Watch)
 - Order placement with Cash on Delivery (COD)
 - Live Order Tracking System using Order ID (e.g. AD-261002-H86LN)
 - Admin Management Dashboard (/admin)

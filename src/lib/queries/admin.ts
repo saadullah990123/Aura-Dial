@@ -154,9 +154,52 @@ export async function getAdminProduct(id: string) {
   return { product, images };
 }
 
+export async function ensureDefaultCategories() {
+  try {
+    const defaults = [
+      {
+        name: "Watches",
+        slug: "watches",
+        description: "Curated luxury, dress, sports, and casual timepieces for men and women.",
+        sortOrder: 1,
+        isActive: true,
+      },
+      {
+        name: "Perfume",
+        slug: "perfume",
+        description: "Signature fragrances, oriental scents, and luxury perfumes.",
+        sortOrder: 2,
+        isActive: true,
+      },
+      {
+        name: "Customize Watch",
+        slug: "customize-watch",
+        description: "Bespoke dial customization and personalized luxury watches.",
+        sortOrder: 3,
+        isActive: true,
+      },
+    ];
+
+    for (const def of defaults) {
+      const [existing] = await db
+        .select({ id: categories.id })
+        .from(categories)
+        .where(eq(categories.slug, def.slug))
+        .limit(1);
+
+      if (!existing) {
+        await db.insert(categories).values(def).onConflictDoNothing();
+      }
+    }
+  } catch (error) {
+    console.warn("[admin] ensureDefaultCategories warning (non-fatal):", error);
+  }
+}
+
 export async function listAdminCategories() {
   // Defence in depth: never read admin data unless the caller is a verified admin.
   await requireAdmin();
+  await ensureDefaultCategories();
   return db
     .select({
       id: categories.id,
@@ -259,6 +302,7 @@ export async function getAdminPage(slug: string) {
 export async function categoryOptions() {
   // Defence in depth: never read admin data unless the caller is a verified admin.
   await requireAdmin();
+  await ensureDefaultCategories();
   return db
     .select({ id: categories.id, name: categories.name })
     .from(categories)

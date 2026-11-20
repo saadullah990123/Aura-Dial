@@ -7,7 +7,16 @@ export function WhatsAppWidget() {
   const [showTooltip, setShowTooltip] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
+    // Defer non-critical widget rendering until main thread is idle to eliminate TBT on initial paint
+    if (typeof window !== "undefined") {
+      if ("requestIdleCallback" in window) {
+        const handle = window.requestIdleCallback(() => setMounted(true), { timeout: 2000 });
+        return () => window.cancelIdleCallback(handle);
+      } else {
+        const timer = setTimeout(() => setMounted(true), 1200);
+        return () => clearTimeout(timer);
+      }
+    }
   }, []);
 
   if (!mounted) return null;

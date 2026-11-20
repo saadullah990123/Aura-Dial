@@ -1,9 +1,9 @@
-import { ArrowRight, Glasses, Headphones, RotateCcw, ShieldCheck, Star, Truck, Watch } from "lucide-react";
+import { ArrowRight, Headphones, RotateCcw, ShieldCheck, Sparkles, Star, Truck, Wand2, Watch } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 
-import { GlassesArt, HeroArt, WatchArt, type ArtTone } from "@/components/store/art";
+import { CustomWatchArt, HeroArt, PerfumeArt, WatchArt, type ArtTone } from "@/components/store/art";
 import { ProductCard } from "@/components/store/product-card";
 import { ProductCarousel } from "@/components/store/product-carousel";
 import { formatPrice } from "@/lib/format";
@@ -19,9 +19,11 @@ const CATEGORY_CARDS: {
   tagline: string;
   href: string;
   tile: string;
-  kind: "watch" | "glasses";
+  kind: "watch" | "perfume" | "custom-watch";
   tone: ArtTone;
   bg: string;
+  defaultImage: string | null;
+  imageClass?: string;
 }[] = [
   {
     label: "Men's Watches",
@@ -31,6 +33,8 @@ const CATEGORY_CARDS: {
     kind: "watch",
     tone: "black",
     bg: "from-[#3a2b1c] via-[#22180f] to-[#100b07]",
+    defaultImage: "/images/univers-point-slim-stand.jpg",
+    imageClass: "object-cover object-center",
   },
   {
     label: "Women's Watches",
@@ -40,24 +44,30 @@ const CATEGORY_CARDS: {
     kind: "watch",
     tone: "rose",
     bg: "from-[#8a6a55] via-[#5c4535] to-[#2a1f17]",
+    defaultImage: "/images/girls2.jpg",
+    imageClass: "object-cover object-center",
   },
   {
-    label: "Men's Glasses",
-    tagline: "Modern • Sharp • Confident",
-    href: "/collections/glasses?gender=men",
-    tile: "glasses:men",
-    kind: "glasses",
-    tone: "black",
-    bg: "from-[#4b3a2a] via-[#2b2016] to-[#120d09]",
+    label: "Perfume",
+    tagline: "Signature • Luxury • Alluring",
+    href: "/collections/perfume",
+    tile: "perfume",
+    kind: "perfume",
+    tone: "gold",
+    bg: "from-[#4a3520] via-[#281a10] to-[#110b07]",
+    defaultImage: "/images/perfume-card.jpg",
+    imageClass: "object-cover object-center",
   },
   {
-    label: "Women's Glasses",
-    tagline: "Trendy • Chic • Iconic",
-    href: "/collections/glasses?gender=women",
-    tile: "glasses:women",
-    kind: "glasses",
-    tone: "rose",
-    bg: "from-[#a67c62] via-[#6d4d3a] to-[#33241b]",
+    label: "Customize Watch",
+    tagline: "Personalized • Bespoke • Crafted",
+    href: "/collections/customize-watch",
+    tile: "customize-watch",
+    kind: "custom-watch",
+    tone: "gold",
+    bg: "from-[#382618] via-[#21160e] to-[#0e0906]",
+    defaultImage: "/images/customize-watch-card.jpg",
+    imageClass: "object-cover object-center",
   },
 ];
 
@@ -67,7 +77,8 @@ const CAROUSEL_ITEM_CLASS =
 
 const CAROUSEL_SECTIONS = [
   { slug: "watches", eyebrow: "Timepieces", title: "Watches" },
-  { slug: "glasses", eyebrow: "Eyewear", title: "Glasses" },
+  { slug: "perfume", eyebrow: "Fragrance", title: "Perfumes" },
+  { slug: "customize-watch", eyebrow: "Bespoke Dials", title: "Customize Watch" },
 ] as const;
 
 const SHOWCASE_WATCH_DEFAULTS = [
@@ -79,17 +90,32 @@ const SHOWCASE_WATCH_DEFAULTS = [
 ];
 
 export default async function HomePage() {
-  const [settings, bestSellers, tileImages, watches, glasses, storefrontRating, dbShowcase] =
-    await Promise.all([
-      getStoreSettings(),
-      getProducts({ bestsellersOnly: true, limit: 4 }),
-      getCollectionTileImages(),
-      getProducts({ categorySlug: "watches", limit: 12 }),
-      getProducts({ categorySlug: "glasses", limit: 12 }),
-      getStorefrontRating(),
-      getProducts({ ids: SHOWCASE_WATCH_DEFAULTS.map((w) => w.id) }),
-    ]);
-  const carouselProducts = { watches, glasses };
+  const [
+    settings,
+    bestSellers,
+    tileImages,
+    watches,
+    perfumes,
+    customWatches,
+    legacyGlasses,
+    storefrontRating,
+    dbShowcase,
+  ] = await Promise.all([
+    getStoreSettings(),
+    getProducts({ bestsellersOnly: true, limit: 4 }),
+    getCollectionTileImages(),
+    getProducts({ categorySlug: "watches", limit: 12 }),
+    getProducts({ categorySlug: "perfume", limit: 12 }),
+    getProducts({ categorySlug: "customize-watch", limit: 12 }),
+    getProducts({ categorySlug: "glasses", limit: 12 }),
+    getStorefrontRating(),
+    getProducts({ ids: SHOWCASE_WATCH_DEFAULTS.map((w) => w.id) }),
+  ]);
+  const carouselProducts: Record<string, typeof watches> = {
+    watches,
+    perfume: perfumes.length > 0 ? perfumes : legacyGlasses,
+    "customize-watch": customWatches,
+  };
 
   const dbWatchMap = new Map(dbShowcase.map((p) => [p.id, p]));
   const showcaseWatches = SHOWCASE_WATCH_DEFAULTS.map((item) => {
@@ -159,14 +185,14 @@ export default async function HomePage() {
               </span>
             </div>
             <h1 className="mt-4 font-serif text-4xl font-semibold leading-[1.1] text-white sm:text-5xl lg:text-6xl">
-              Watches &amp; Glasses
+              Watches &amp; Perfume
             </h1>
             <p className="mt-2 font-serif text-3xl italic text-gold sm:text-4xl">
-              For Every Style
+              Crafted For Every Style
             </p>
             <div className="mt-5 h-px w-24 bg-gradient-to-r from-gold to-transparent" />
             <p className="mt-5 text-sm leading-relaxed text-stone-300 sm:text-base">
-              Timeless watches and glasses for every style. Delivered nationwide with cash on delivery across Pakistan.
+              Timeless luxury watches, signature perfumes, and bespoke dials. Delivered nationwide with cash on delivery across Pakistan.
             </p>
             <Link
               href="/collections/all"
@@ -181,10 +207,10 @@ export default async function HomePage() {
             <div className="relative h-[280px] overflow-hidden rounded-2xl sm:h-[340px] md:h-[400px]">
               <Image
                 src={settings.heroImageUrl || "/images/univers-point-slim-stand.jpg"}
-                alt="Aura Dial featured watches and glasses"
+                alt="Aura Dial luxury watches and perfumes"
                 fill
                 priority
-                sizes="(min-width: 768px) 50vw, 100vw"
+                sizes="(min-width: 1280px) 590px, (min-width: 768px) 50vw, 100vw"
                 className="object-cover"
               />
             </div>
@@ -199,9 +225,9 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-7xl grid-cols-4 gap-2.5 sm:gap-4">
           {[
             { label: "Watches", href: "/collections/watches", icon: Watch, active: true },
-            { label: "Glasses", href: "/collections/glasses", icon: Glasses, active: false },
-            { label: "Men's", href: "/collections/all?gender=men", symbol: "♂", active: false },
-            { label: "Women's", href: "/collections/all?gender=women", symbol: "♀", active: false },
+            { label: "Perfume", href: "/collections/perfume", icon: Sparkles, active: false },
+            { label: "Customize", href: "/collections/customize-watch", icon: Wand2, active: false },
+            { label: "All Items", href: "/collections/all", symbol: "★", active: false },
           ].map((cat) => {
             const Icon = cat.icon;
             return (
@@ -233,10 +259,10 @@ export default async function HomePage() {
       {/* Category cards */}
       <section className="bg-[#0e0a07] px-4 py-7 sm:px-6 sm:py-10 lg:px-8" aria-label="Shop by category">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-[14px] gap-y-[16px] min-[320px]:gap-x-[10px] min-[320px]:gap-y-[12px] sm:gap-4 lg:grid-cols-4">
-          {CATEGORY_CARDS.map((card) => {
-            const cardImg =
-              tileImages[card.tile] ||
-              (card.label === "Men's Watches" ? "/images/univers-point-slim-stand.jpg" : null);
+          {CATEGORY_CARDS.map((card, idx) => {
+            const liveTileImg = tileImages[card.tile];
+            const isCloudinaryUpload = liveTileImg && liveTileImg.startsWith("https://res.cloudinary.com");
+            const cardImg = isCloudinaryUpload ? liveTileImg : (card.defaultImage || liveTileImg);
 
             return (
               <Link
@@ -249,15 +275,18 @@ export default async function HomePage() {
                     src={cardImg}
                     alt={card.label}
                     fill
-                    sizes="(min-width: 1024px) 25vw, 50vw"
-                    className="object-cover opacity-90 transition duration-500 group-hover:scale-105"
+                    priority={idx < 2}
+                    sizes="(min-width: 1280px) 290px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 50vw"
+                    className={`${card.imageClass || "object-cover object-center"} opacity-90 transition duration-500 group-hover:scale-105`}
                   />
                 ) : (
                   <div className="absolute inset-x-0 top-0 flex h-[68%] items-center justify-center">
                     {card.kind === "watch" ? (
                       <WatchArt tone={card.tone} className="h-[92%] w-auto transition duration-500 group-hover:scale-105" />
+                    ) : card.kind === "perfume" ? (
+                      <PerfumeArt tone={card.tone} className="h-[88%] w-auto transition duration-500 group-hover:scale-105" />
                     ) : (
-                      <GlassesArt tone={card.tone} className="w-[62%] transition duration-500 group-hover:scale-105" />
+                      <CustomWatchArt tone={card.tone} className="h-[92%] w-auto transition duration-500 group-hover:scale-105" />
                     )}
                   </div>
                 )}
@@ -360,7 +389,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Watches and Glasses carousels */}
+      {/* Curated category carousels */}
       {CAROUSEL_SECTIONS.map(({ slug, eyebrow, title }, index) => {
         const items = carouselProducts[slug];
         if (items.length === 0) return null;

@@ -169,18 +169,29 @@ export async function deleteProductAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
   if (!/^[0-9a-f-]{36}$/i.test(id)) redirect("/admin/products");
 
-  const [existing] = await db.select().from(products).where(eq(products.id, id)).limit(1);
-  if (!existing) redirect("/admin/products");
+  try {
+    const [existing] = await db.select().from(products).where(eq(products.id, id)).limit(1);
+    if (!existing) redirect("/admin/products");
 
-  const images = await db
-    .select({ publicId: productImages.publicId })
-    .from(productImages)
-    .where(eq(productImages.productId, id));
+    const images = await db
+      .select({ publicId: productImages.publicId })
+      .from(productImages)
+      .where(eq(productImages.productId, id));
 
-  // Order lines keep their snapshot (name, price) even after the product is gone.
-  await db.delete(products).where(eq(products.id, id));
-  await destroyImages(images.map((image) => image.publicId));
-  await writeAudit({ adminId: admin.id, action: "product.delete", entityType: "product", entityId: id, beforeData: { name: existing.name } });
+    // Order lines keep their snapshot (name, price) even after the product is gone.
+    await db.delete(products).where(eq(products.id, id));
+    await destroyImages(images.map((image) => image.publicId));
+    await writeAudit({
+      adminId: admin.id,
+      action: "product.delete",
+      entityType: "product",
+      entityId: id,
+      beforeData: { name: existing.name },
+    });
+  } catch (error) {
+    console.error("Deleting product failed:", error);
+    redirect("/admin/products?error=delete-failed");
+  }
 
   revalidatePath("/", "layout");
   redirect("/admin/products?deleted=1");

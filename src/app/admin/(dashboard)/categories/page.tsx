@@ -22,11 +22,11 @@ export default async function AdminCategoriesPage({
 
   return (
     <>
-      <PageHeader title="Categories" description="Group your products. Watches and Glasses are used across the store and can't be deleted." />
+      <PageHeader title="Categories" description="Group your products. Watches, Perfume, and Customize Watch are primary store categories." />
 
       {sp.saved ? <p role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">Category saved.</p> : null}
       {sp.deleted ? <p role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">Category deleted.</p> : null}
-      {sp.error === "protected" ? <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">Watches and Glasses are used across the store and can&apos;t be deleted.</p> : null}
+      {sp.error === "protected" ? <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">Core store categories are used across the storefront and can&apos;t be deleted.</p> : null}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <div className="overflow-x-auto rounded-xl border border-stone-200 bg-white shadow-sm">
@@ -55,7 +55,7 @@ export default async function AdminCategoriesPage({
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
                       <Link href={`/admin/categories?edit=${c.id}`} className="rounded-md px-2.5 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-100">Edit</Link>
-                      {c.slug === "watches" || c.slug === "glasses" ? null : (
+                      {["watches", "perfume", "customize-watch", "glasses"].includes(c.slug) ? null : (
                         <form action={deleteCategoryAction}>
                           <input type="hidden" name="id" value={c.id} />
                           <ConfirmButton message={`Delete "${c.name}"? Its ${c.productCount} product(s) will become uncategorised.`}>Delete</ConfirmButton>

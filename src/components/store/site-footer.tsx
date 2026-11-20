@@ -107,7 +107,8 @@ export async function SiteFooter() {
   const quickLinks = [
     { label: "Home", href: "/" },
     { label: "Watches", href: "/collections/watches" },
-    { label: "Glasses", href: "/collections/glasses" },
+    { label: "Perfume", href: "/collections/perfume" },
+    { label: "Customize Watch", href: "/collections/customize-watch" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
     { label: "Track Order", href: "/track-order" },
@@ -133,7 +134,7 @@ export async function SiteFooter() {
               />
             </Link>
             <p className="mt-3.5 max-w-xs text-xs sm:text-sm leading-relaxed text-stone-400">
-              Watches and glasses for every style, delivered across Pakistan.
+              Watches, perfumes, and customized dials for every style, delivered across Pakistan.
             </p>
           </div>
 

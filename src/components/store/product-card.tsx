@@ -2,7 +2,7 @@
 
 import { ArrowRight, Check, Heart, ShoppingBag, Star } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import type { ArtTone } from "@/components/store/art";
 import { ProductCardImage } from "@/components/store/product-card-image";
@@ -12,6 +12,8 @@ import { useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
 
 function placeholderTone(product: StoreProduct): ArtTone {
+  if (product.categorySlug === "perfume") return "gold";
+  if (product.categorySlug === "customize-watch") return "gold";
   if (product.gender === "women") return "rose";
   if (product.gender === "men") return product.categorySlug === "glasses" ? "black" : "silver";
   return "gold";
@@ -84,10 +86,14 @@ export function ProductCard({
   product,
   rating: explicitRating,
   reviewCount: explicitCount,
+  priority = false,
+  sizes,
 }: {
   product: StoreProduct;
   rating?: number | null;
   reviewCount?: number;
+  priority?: boolean;
+  sizes?: string;
 }) {
   const isGlasses = product.categorySlug === "glasses";
   const tone = placeholderTone(product);
@@ -103,18 +109,15 @@ export function ProductCard({
 
   // Wishlist integration
   const toggleWishlist = useWishlistStore((state) => state.toggleItem);
-  const hasItem = useWishlistStore((state) => state.hasItem);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const isWishlisted = useWishlistStore((state) =>
+    state.items.some((item) => item.productId === product.id),
+  );
   const [heartAnim, setHeartAnim] = useState(false);
-
-  useEffect(() => {
-    setIsWishlisted(hasItem(product.id));
-  }, [hasItem, product.id]);
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const nextState = toggleWishlist({
+    toggleWishlist({
       productId: product.id,
       name: product.name,
       price: effectivePrice,
@@ -125,7 +128,6 @@ export function ProductCard({
       categorySlug: product.categorySlug,
       inStock: product.inStock,
     });
-    setIsWishlisted(nextState);
     setHeartAnim(true);
     setTimeout(() => setHeartAnim(false), 250);
   };
@@ -157,7 +159,10 @@ export function ProductCard({
             src={product.imageUrl}
             alt={product.name}
             isGlasses={isGlasses}
+            categorySlug={product.categorySlug}
             tone={tone}
+            priority={priority}
+            sizes={sizes}
           />
         </Link>
 
