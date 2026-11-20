@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { CustomWatchArt, GlassesArt, PerfumeArt, WatchArt, type ArtTone } from "@/components/store/art";
+import { optimizeCloudinaryUrl } from "@/lib/cloudinary/optimize";
 
 interface ProductCardImageProps {
   src: string | null | undefined;
@@ -30,20 +31,21 @@ export function ProductCardImage({
 }: ProductCardImageProps) {
   const [hasError, setHasError] = useState(false);
 
-  const showFallback = !src || hasError;
+  const resolvedSrc = optimizeCloudinaryUrl(src);
+  const showFallback = !resolvedSrc || hasError;
 
   return (
     <div className="relative aspect-square w-full overflow-hidden bg-gradient-to-b from-[#261f18] via-[#1b1510] to-[#120d09]">
       {!showFallback ? (
         <Image
-          src={src}
+          src={resolvedSrc}
           alt={alt}
           fill
           priority={priority}
           loading={loading ?? (priority ? "eager" : "lazy")}
           sizes={
             sizes ||
-            "(min-width: 1280px) 290px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 50vw"
+            "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 290px"
           }
           className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
           onError={() => setHasError(true)}

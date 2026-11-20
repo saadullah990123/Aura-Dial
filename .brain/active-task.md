@@ -27,15 +27,17 @@
   - Admin Dashboard enhancements: Added safe error handling for product deletion, direct "Delete product" button on product edit page, URL/local path manual entry in `ImageUploader`, protected category integrity for core categories (`watches`, `perfume`, `customize-watch`, `glasses`), and automatic category seeding without manual database operations.
   - Verification: `npm run typecheck` and `npm run lint` pass with 0 errors and 0 warnings.
 
-- **Storefront Performance & Core Web Vitals Optimization**:
+- **Storefront Performance & Core Web Vitals Optimization (Targeting 95–100 Lighthouse)**:
   - **LCP & Image Optimization (`product-card-image.tsx`, `product-card.tsx`, `collections/[slug]`, `page.tsx`, `product-gallery.tsx`)**:
-    - Added `priority`, `loading`, and responsive `sizes` forwarding to `ProductCardImage` and `ProductCard`.
-    - Above-the-fold collection cards (`index < 4`) load with `priority={true}` and `loading="eager"`, directly eliminating Next.js above-the-fold LCP image warnings. Below-the-fold cards remain lazily loaded.
-    - Tailored responsive `sizes` across all image components (`(min-width: 1280px) 290px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 50vw` for cards, `590px` for hero/gallery), preventing mobile and high-DPI desktop viewports from requesting oversized images.
-    - Prioritized top 2 category cards on homepage and tuned Hero image sizes.
+    - Added `optimizeCloudinaryUrl` helper (`src/lib/cloudinary/optimize.ts`) which automatically injects `f_auto,q_auto` to ensure modern AVIF/WebP edge delivery and eliminate raw uncompressed downloads.
+    - Added `priority`, `loading`, and tuned responsive `sizes` across all image components (`(max-width: 768px) 50vw, 285px` for cards, `(max-width: 768px) 100vw, 590px` for hero).
+    - Top 4 collection cards load with `priority={true}` and `loading="eager"`, directly eliminating Next.js LCP warnings. All below-the-fold cards and carousels remain lazy.
+    - Configured `next.config.ts` with device and image sizing arrays + 1-year immutable caching for static assets (`/images/*` and `/brand/*`).
   - **Main-Thread Blocking & Hydration Optimization (TBT reduction)**:
-    - Optimized `CartDrawer`: Defers DOM creation and calculation overhead until opened at least once (`hasEverOpened` guard), skipping full drawer hydration during initial page load while preserving 100% of open/close slide transitions.
-    - Optimized `WhatsAppWidget`: Defers initialization and SVG/CSS ping animation loops until after initial hydration using `requestIdleCallback` (with timer fallback), freeing the main thread for instant first paint.
+    - **ProductCard Converted to Server Component**: Removed `"use client"` from `ProductCard`. Isolated interactive client logic into two tiny client leaf buttons: `ProductCardWishlistButton` and `ProductCardAddToCartButton`. 45+ product cards on the homepage now render as pure server HTML, eliminating hundreds of client hydration hooks and recalculations.
+    - **Code-Split Drawers & Widgets**: Created `StoreDrawers` and `DynamicWhatsAppWidget` with `next/dynamic` (`ssr: false`). Neither `CartDrawer`, `WishlistDrawer`, nor `WhatsAppWidget` are included in the initial SSR HTML or initial JS execution, freeing the main thread for first paint.
+  - **Font Optimization (`src/app/layout.tsx`, `src/app/globals.css`)**:
+    - Migrated from `@fontsource-variable` raw CSS to `next/font/google` (`Inter` and `Playfair_Display`) with `display: "swap"`, CSS variables, and zero layout shift.
   - **Build & TypeScript Verification**:
     - `npm run typecheck`: Passed with 0 errors.
     - `npm run lint`: Passed with 0 errors and 0 warnings.

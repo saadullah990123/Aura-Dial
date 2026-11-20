@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
-import "@fontsource-variable/inter";
-import "@fontsource-variable/playfair-display";
-import "@fontsource-variable/playfair-display/wght-italic.css";
+import { Inter, Playfair_Display } from "next/font/google";
 
 import "./globals.css";
 
 import { ConnectionBanner } from "@/components/connection-banner";
-import { WhatsAppWidget } from "@/components/WhatsAppWidget";
+import { DynamicWhatsAppWidget } from "@/components/dynamic-whatsapp-widget";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-playfair",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://auradial.store"),
@@ -63,11 +73,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="antialiased">
         {children}
         <ConnectionBanner />
-        <WhatsAppWidget />
+        <DynamicWhatsAppWidget />
       </body>
     </html>
   );

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CustomWatchArt, HeroArt, PerfumeArt, WatchArt, type ArtTone } from "@/components/store/art";
 import { ProductCard } from "@/components/store/product-card";
 import { ProductCarousel } from "@/components/store/product-carousel";
+import { optimizeCloudinaryUrl } from "@/lib/cloudinary/optimize";
 import { formatPrice } from "@/lib/format";
 import {
   getCollectionTileImages,
@@ -206,11 +207,11 @@ export default async function HomePage() {
           {settings.heroImageUrl || "/images/univers-point-slim-stand.jpg" ? (
             <div className="relative h-[280px] overflow-hidden rounded-2xl sm:h-[340px] md:h-[400px]">
               <Image
-                src={settings.heroImageUrl || "/images/univers-point-slim-stand.jpg"}
+                src={optimizeCloudinaryUrl(settings.heroImageUrl) || "/images/univers-point-slim-stand.jpg"}
                 alt="Aura Dial luxury watches and perfumes"
                 fill
                 priority
-                sizes="(min-width: 1280px) 590px, (min-width: 768px) 50vw, 100vw"
+                sizes="(max-width: 768px) 100vw, 590px"
                 className="object-cover"
               />
             </div>
@@ -262,7 +263,7 @@ export default async function HomePage() {
           {CATEGORY_CARDS.map((card, idx) => {
             const liveTileImg = tileImages[card.tile];
             const isCloudinaryUpload = liveTileImg && liveTileImg.startsWith("https://res.cloudinary.com");
-            const cardImg = isCloudinaryUpload ? liveTileImg : (card.defaultImage || liveTileImg);
+            const cardImg = isCloudinaryUpload ? optimizeCloudinaryUrl(liveTileImg) : (card.defaultImage || liveTileImg);
 
             return (
               <Link
@@ -276,7 +277,7 @@ export default async function HomePage() {
                     alt={card.label}
                     fill
                     priority={idx < 2}
-                    sizes="(min-width: 1280px) 290px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 50vw"
+                    sizes="(max-width: 768px) 50vw, 285px"
                     className={`${card.imageClass || "object-cover object-center"} opacity-90 transition duration-500 group-hover:scale-105`}
                   />
                 ) : (

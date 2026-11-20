@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { CustomWatchArt, GlassesArt, PerfumeArt, WatchArt, type ArtTone } from "@/components/store/art";
+import { optimizeCloudinaryUrl } from "@/lib/cloudinary/optimize";
 
 export function ProductGallery({
   images,
@@ -28,11 +29,11 @@ export function ProductGallery({
       <div className="relative aspect-square overflow-hidden rounded-2xl border border-sand bg-gradient-to-b from-white to-cream">
         {current && !isFailed ? (
           <Image
-            src={current.url}
+            src={optimizeCloudinaryUrl(current.url) || current.url}
             alt={current.alt || name}
             fill
             priority
-            sizes="(min-width: 1280px) 590px, (min-width: 1024px) 50vw, (min-width: 640px) 90vw, 100vw"
+            sizes="(max-width: 1024px) 100vw, 590px"
             className="object-contain p-6"
             onError={() => setFailedUrls((prev) => ({ ...prev, [current.url]: true }))}
           />

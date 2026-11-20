@@ -1,5 +1,6 @@
-import { CartDrawer, CartHydrator } from "@/components/store/cart-drawer";
+import { CartHydrator } from "@/components/store/cart-drawer";
 import { HeaderClient } from "@/components/store/header-client";
+import { StoreDrawers } from "@/components/store/store-drawers";
 import { getStoreSettings } from "@/lib/queries/store";
 import { normalizePakistanPhone } from "@/lib/utils/phone";
 
@@ -26,7 +27,7 @@ export async function SiteHeader() {
       />
 
       <CartHydrator />
-      <CartDrawer
+      <StoreDrawers
         storeName={settings.storeName}
         whatsappPhone={settings.whatsappPhone}
       />

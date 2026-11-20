@@ -1,15 +1,12 @@
-"use client";
-
-import { ArrowRight, Check, Heart, ShoppingBag, Star } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
 import type { ArtTone } from "@/components/store/art";
+import { ProductCardAddToCartButton } from "@/components/store/product-card-add-to-cart";
 import { ProductCardImage } from "@/components/store/product-card-image";
+import { ProductCardWishlistButton } from "@/components/store/product-card-wishlist";
 import { formatPrice } from "@/lib/format";
 import type { StoreProduct } from "@/lib/queries/store";
-import { useCartStore } from "@/store/cart";
-import { useWishlistStore } from "@/store/wishlist";
 
 function placeholderTone(product: StoreProduct): ArtTone {
   if (product.categorySlug === "perfume") return "gold";
@@ -103,49 +100,6 @@ export function ProductCard({
   const badge = getBadge(product, onSale);
   const { rating, count } = getRatingData(product, explicitRating, explicitCount);
 
-  // Cart integration
-  const addItem = useCartStore((state) => state.addItem);
-  const [added, setAdded] = useState(false);
-
-  // Wishlist integration
-  const toggleWishlist = useWishlistStore((state) => state.toggleItem);
-  const isWishlisted = useWishlistStore((state) =>
-    state.items.some((item) => item.productId === product.id),
-  );
-  const [heartAnim, setHeartAnim] = useState(false);
-
-  const handleWishlistClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleWishlist({
-      productId: product.id,
-      name: product.name,
-      price: effectivePrice,
-      salePrice: product.salePrice,
-      imageUrl: product.imageUrl,
-      slug: product.slug,
-      brand: product.brand,
-      categorySlug: product.categorySlug,
-      inStock: product.inStock,
-    });
-    setHeartAnim(true);
-    setTimeout(() => setHeartAnim(false), 250);
-  };
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!product.inStock) return;
-    addItem({
-      productId: product.id,
-      name: product.name,
-      price: effectivePrice,
-      imageUrl: product.imageUrl,
-    });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1400);
-  };
-
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#16120e] shadow-md shadow-black/40 transition-all duration-300 hover:-translate-y-1 hover:border-gold/50 hover:shadow-xl hover:shadow-gold/10">
       {/* Top Image Container */}
@@ -177,23 +131,8 @@ export function ProductCard({
           </div>
         ) : null}
 
-        {/* Wishlist Button (Top Right) */}
-        <button
-          type="button"
-          onClick={handleWishlistClick}
-          aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
-          className={`absolute right-2.5 top-2.5 z-20 flex size-8 items-center justify-center rounded-full border border-white/20 bg-black/60 backdrop-blur-md transition-all duration-200 hover:scale-110 hover:border-gold active:scale-95 ${
-            heartAnim ? "scale-125" : ""
-          }`}
-        >
-          <Heart
-            className={`size-4 transition-colors duration-200 ${
-              isWishlisted
-                ? "fill-rose-500 text-rose-500"
-                : "text-white/80 hover:text-white"
-            }`}
-          />
-        </button>
+        {/* Wishlist Button (Interactive Client Leaf) */}
+        <ProductCardWishlistButton product={product} effectivePrice={effectivePrice} />
       </div>
 
       {/* Card Content */}
@@ -236,29 +175,9 @@ export function ProductCard({
           </span>
         </div>
 
-        {/* Action Row: Compact Add to Cart + Circular Quick Details Arrow */}
+        {/* Action Row: Interactive Add to Cart + Circular Quick Details Arrow */}
         <div className="mt-auto flex items-center gap-1.5 sm:gap-2 pt-3">
-          <button
-            type="button"
-            disabled={!product.inStock}
-            onClick={handleAddToCart}
-            aria-label={product.inStock ? `Add ${product.name} to cart` : "Out of stock"}
-            className="group/btn relative flex h-9 sm:h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-xl border border-gold/40 bg-[#1e1813] px-2.5 sm:px-3 text-xs font-semibold text-gold-soft transition-all duration-200 hover:border-gold hover:bg-gold hover:text-ink active:scale-[0.98] disabled:cursor-not-allowed disabled:border-stone-800 disabled:bg-stone-900 disabled:text-stone-500"
-          >
-            {added ? (
-              <>
-                <Check className="size-3.5 shrink-0 text-emerald-400 group-hover/btn:text-ink" strokeWidth={2.5} />
-                <span className="truncate">Added!</span>
-              </>
-            ) : (
-              <>
-                <ShoppingBag className="size-3.5 shrink-0 transition-transform duration-200 group-hover/btn:scale-110" />
-                <span className="truncate">
-                  {product.inStock ? "Add to Cart" : "Sold Out"}
-                </span>
-              </>
-            )}
-          </button>
+          <ProductCardAddToCartButton product={product} effectivePrice={effectivePrice} />
 
           <Link
             href={`/products/${product.slug}`}
