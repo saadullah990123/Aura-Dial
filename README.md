@@ -1,290 +1,373 @@
-<div align="center">
+# ⌚ AURA DIAL
+### Premium E-Commerce Platform for Watches & Eyewear
 
-<img src="public/brand/logo-full.png" alt="Aura Dial" width="200" />
+<p align="center">
+  A modern, full-stack e-commerce platform engineered to deliver a premium shopping experience, streamlined order management, and secure store administration.
+</p>
 
-# Aura Dial
-
-### Luxury watches & eyewear e-commerce, built for Cash-on-Delivery markets.
-
-A production-grade storefront and admin platform with instant checkout, order tracking, and full inventory management.
-
-<br />
-
-[![Live Demo](https://img.shields.io/badge/Live_Demo-aura--dial--delta.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://aura-dial-delta.vercel.app)
-
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-0F172A?style=flat-square&logo=tailwindcss&logoColor=38BDF8)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
-![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=flat-square&logo=drizzle&logoColor=black)
-![Neon](https://img.shields.io/badge/Neon-00E599?style=flat-square&logo=neon&logoColor=black)
-![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=flat-square&logo=cloudinary&logoColor=white)
-![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
-
-[**Live Demo**](https://aura-dial-delta.vercel.app) · [**Features**](#-features) · [**Architecture**](#-architecture) · [**Getting Started**](#-getting-started) · [**Screenshots**](#-screenshots)
-
-</div>
+<p align="center">
+  <a href="https://aura-dial-delta.vercel.app/"><strong>🌐 Live Website</strong></a>
+  &nbsp; • &nbsp;
+  <strong>Next.js</strong>
+  &nbsp; • &nbsp;
+  <strong>TypeScript</strong>
+  &nbsp; • &nbsp;
+  <strong>PostgreSQL</strong>
+</p>
 
 ---
 
-## 📖 Overview
+## Overview
 
-**Aura Dial** is a full-stack e-commerce platform for luxury timepieces and eyewear. It pairs a fast, mobile-first storefront with a secure, database-backed admin dashboard, so a store owner can run the entire business — catalog, orders, content, and settings — without touching code.
+**Aura Dial** is a full-stack e-commerce platform specializing in watches and eyewear. Built with modern web technologies, it combines an elegant customer-facing storefront with a powerful, database-driven administrative management system.
 
-The checkout is designed around **Cash-on-Delivery (COD)**: no payment gateway, no account required. Customers place an order in seconds and track it later with just an order ID and phone number.
+The platform is designed around three core principles:
 
-**Highlights**
+- **Premium Experience:** A clean, responsive, and intuitive shopping interface.
+- **Operational Efficiency:** Centralized product, inventory, and order management.
+- **Security & Reliability:** Server-side validation, protected administrative sessions, and structured database operations.
 
-- ⚡ Server-rendered with the Next.js App Router, with streaming `loading.tsx` states on every route
-- 🔒 Hardened admin: hashed credentials, signed cookie sessions, CSRF protection, rate limiting, and audit logging
-- 🧱 Type-safe end to end: TypeScript, Zod validation on client **and** server, and Drizzle ORM for the database
-- ☁️ Serverless-ready: Neon Postgres, Cloudinary signed uploads, and zero-config Vercel deploys
+From product discovery to order fulfillment, Aura Dial provides an integrated solution for managing an online retail business.
 
----
+## Live Deployment
 
-## ✨ Features
+<p align="center">
+  <a href="https://aura-dial-delta.vercel.app/">
+    <img src="https://img.shields.io/badge/EXPLORE%20LIVE%20STORE-Aura%20Dial-111111?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Store">
+  </a>
+</p>
 
-### 🛍️ Storefront
-
-| | Feature | Description |
-|:-:|:--|:--|
-| 🗂️ | **Catalog & Collections** | Curated watch and eyewear categories with filtering, sorting, and best-seller badges |
-| 🖼️ | **Product Pages** | Image galleries, variants, and customer reviews with photo uploads |
-| 🛒 | **Cart & Wishlist** | Persistent slide-over drawers powered by Zustand |
-| 💳 | **COD Checkout** | Client-side validation plus server-side verification of every order |
-| 📦 | **Order Tracking** | Live status lookup by order ID and phone number |
-| 💬 | **WhatsApp Support** | Floating widget for instant customer inquiries |
-| 🔎 | **SEO Ready** | Dynamic sitemap, robots rules, and Open Graph image |
-| 📱 | **Responsive** | Mobile bottom navigation and layouts tuned for every screen size |
-| 📡 | **Offline Awareness** | Connection banner that warns users when they lose network |
-
-### 🔐 Admin Dashboard
-
-| | Feature | Description |
-|:-:|:--|:--|
-| 📊 | **Executive Dashboard** | Sales metrics and performance at a glance |
-| 🧾 | **Order Management** | Full lifecycle control with status updates |
-| 🏷️ | **Products & Categories** | Complete CRUD for items, pricing, inventory, and categories |
-| ⭐ | **Review Moderation** | Approve, review, and manage customer feedback |
-| ☁️ | **Media Management** | Direct-to-Cloudinary uploads via signed requests |
-| 📝 | **Content & Policies** | Edit store pages and policy text without redeploying |
-| ⚙️ | **Store Settings** | Global settings, banners, and hero content |
-| 🔑 | **Account Security** | Change email and password, forgot/reset password flow, session expiry handling |
+**Production URL:** https://aura-dial-delta.vercel.app/
 
 ---
 
-## 🏗️ Architecture
-
-```mermaid
-flowchart LR
-    A[Customer] --> B[Next.js Storefront]
-    C[Admin] --> D[Admin Dashboard]
-    B --> E[Server Actions & API Routes]
-    D --> E
-    E --> F[(Neon PostgreSQL)]
-    E --> G[Cloudinary]
-    E --> H[Email Service]
-    F --- I[Drizzle ORM]
-```
-
-**Request flow:** every mutation passes through Zod validation, then CSRF and rate-limit checks, then admin authorization where applicable, before touching the database via Drizzle.
-
-### 🛡️ Security
-
-| Concern | Approach |
-|:--|:--|
-| **Passwords** | Hashed with `bcryptjs` |
-| **Sessions** | Secure cookie sessions signed with `ADMIN_SESSION_SECRET` |
-| **CSRF** | Request origin verification on mutating routes |
-| **Abuse protection** | Rate limiting on login, order, and password-reset endpoints |
-| **Input validation** | Shared Zod schemas enforced server-side |
-| **Error handling** | Safe error responses that never leak internals |
-| **Auditing** | Admin actions recorded in an audit log |
-| **Uploads** | Cloudinary signed uploads with server-side verification |
-
----
-
-## 🛠️ Tech Stack
+## Technology Stack
 
 | Layer | Technology |
-|:--|:--|
-| **Framework** | [Next.js](https://nextjs.org/) (App Router) |
-| **UI** | [React](https://react.dev/) · [Tailwind CSS](https://tailwindcss.com/) · [Lucide Icons](https://lucide.dev/) |
-| **Language** | [TypeScript](https://www.typescriptlang.org/) |
-| **Database** | PostgreSQL on [Neon](https://neon.tech/) (serverless) |
-| **ORM** | [Drizzle ORM](https://orm.drizzle.team/) + Drizzle Kit |
-| **State** | [Zustand](https://zustand-demo.pmnd.rs/) |
-| **Validation** | [Zod](https://zod.dev/) |
-| **Media** | [Cloudinary](https://cloudinary.com/) |
-| **Auth** | Cookie sessions + `bcryptjs` |
-| **Hosting** | [Vercel](https://vercel.com/) |
+|---|---|
+| Framework | Next.js (App Router) |
+| Frontend | React |
+| Language | TypeScript |
+| Database | PostgreSQL |
+| Database ORM | Drizzle ORM |
+| Database Hosting | Neon |
+| Styling | Tailwind CSS |
+| State Management | Zustand |
+| Validation | Zod |
+| Authentication | Secure Cookie Sessions & bcryptjs |
+| Image Management | Cloudinary |
+| Icons | Lucide |
+| Deployment | Vercel |
 
 ---
 
-## 🗄️ Database Schema
+## Core Features
 
-| Table | Purpose |
-|:--|:--|
-| `products` | Catalog data: title, slug, pricing, stock, imagery, and status flags |
-| `categories` | Watches, eyewear, and collection groupings |
-| `orders` | Customer details, delivery information, and fulfillment status |
-| `order_items` | Line items tied to each order |
-| `reviews` | Customer ratings and review content |
-| `admins` | Admin credentials and session data |
-| `store_settings` | Global configuration, banners, and metadata |
+### 01. Customer Storefront
+
+- Dynamic product catalog and category collections.
+- Dedicated product detail pages.
+- Product image galleries and variants.
+- Product filtering and sorting.
+- Shopping cart with persistent state.
+- Wishlist functionality.
+- Customer reviews and ratings.
+- Responsive layouts for mobile, tablet, and desktop.
+
+### 02. Checkout & Order Processing
+
+- Cash-on-Delivery (COD) checkout.
+- Client-side and server-side input validation.
+- Order creation and database persistence.
+- Order confirmation pages.
+- Order tracking using order ID and phone number.
+- Customer support through WhatsApp integration.
+
+### 03. Administrative Management System
+
+A dedicated administrative interface provides centralized control over store operations.
+
+| Module | Capabilities |
+|---|---|
+| Dashboard | Sales overview and business metrics |
+| Products | Create, update, and manage products |
+| Categories | Organize product collections |
+| Orders | View and manage customer orders |
+| Reviews | Manage customer feedback |
+| Media | Upload and manage product images |
+| Pages | Edit storefront content |
+| Settings | Configure store preferences |
+| Account | Manage administrative credentials |
+
+### 04. Security & Reliability
+
+- Protected administrative routes.
+- Secure cookie-based authentication sessions.
+- Password hashing using bcryptjs.
+- Server-side authorization checks.
+- Input validation using Zod.
+- CSRF protection utilities.
+- Rate-limiting utilities.
+- Secure image upload workflows.
 
 ---
 
-## 📁 Project Structure
+## Application Architecture
 
-<details>
-<summary><b>Expand the file tree</b></summary>
+Aura Dial follows a modular architecture that separates storefront functionality, administrative operations, database access, and shared business logic.
 
 ```text
-aura-dial-store
-├── public/                     # Brand assets and static images
-├── scripts/                    # Seeding, preflight checks, review table setup
-├── legal-drafts/               # Privacy, returns, shipping, and terms drafts
-└── src/
-    ├── app/
-    │   ├── (store)/            # Public storefront routes
-    │   │   ├── products/[slug]
-    │   │   ├── collections/[slug]
-    │   │   ├── checkout
-    │   │   ├── order-success/[orderNumber]
-    │   │   ├── track-order
-    │   │   ├── policies/[slug]
-    │   │   └── about · contact
-    │   ├── admin/              # Admin app
-    │   │   ├── (dashboard)/    # orders · products · categories · reviews
-    │   │   │                   # pages · settings · account
-    │   │   └── login · forgot-password · reset-password · session-expired
-    │   └── api/                # Auth, orders, tracking, upload signing
-    ├── components/
-    │   ├── admin/              # Admin forms, nav, and tables
-    │   └── store/              # Cart, wishlist, gallery, cards, header, footer
-    ├── db/                     # Drizzle schema, migrations, seed data
-    ├── lib/
-    │   ├── auth/               # Sessions, password hashing, route guards
-    │   ├── security/           # CSRF, rate limit, client IP, safe errors
-    │   ├── validations/        # Zod schemas
-    │   ├── queries/            # Typed data access (store + admin)
-    │   ├── orders/             # Order creation logic
-    │   └── cloudinary/         # Upload signing, verification, cleanup
-    ├── store/                  # Zustand stores (cart, wishlist)
-    └── proxy.ts                # Request interception
+AURA DIAL
+│
+├── Storefront
+│   ├── Home
+│   ├── Collections
+│   ├── Products
+│   ├── Shopping Cart
+│   ├── Wishlist
+│   ├── Checkout
+│   └── Order Tracking
+│
+├── Administration
+│   ├── Dashboard
+│   ├── Product Management
+│   ├── Category Management
+│   ├── Order Management
+│   ├── Review Management
+│   ├── Content Management
+│   └── Store Settings
+│
+├── Backend Services
+│   ├── API Routes
+│   ├── Authentication
+│   ├── Validation
+│   ├── Order Processing
+│   └── Security Utilities
+│
+└── Data & Infrastructure
+    ├── PostgreSQL
+    ├── Drizzle ORM
+    ├── Neon
+    ├── Cloudinary
+    └── Vercel
 ```
-
-</details>
 
 ---
 
-## 🚀 Getting Started
+## Database Design
+
+The application uses PostgreSQL with Drizzle ORM for structured data management.
+
+| Table | Responsibility |
+|---|---|
+| `products` | Product information, pricing, inventory, and images |
+| `categories` | Product categorization |
+| `orders` | Customer orders and delivery information |
+| `order_items` | Products associated with individual orders |
+| `admins` | Administrative accounts and authentication |
+| `store_settings` | Global store configuration |
+| `reviews` | Customer feedback and product ratings |
+
+---
+
+## Project Structure
+
+```text
+aura-dial-store/
+│
+├── public/
+│   ├── brand/
+│   └── images/
+│
+├── src/
+│   ├── app/
+│   │   ├── (store)/
+│   │   ├── admin/
+│   │   ├── api/
+│   │   └── forbidden/
+│   │
+│   ├── components/
+│   │   ├── admin/
+│   │   └── store/
+│   │
+│   ├── db/
+│   │   ├── migrations/
+│   │   └── schema/
+│   │
+│   ├── lib/
+│   │   ├── auth/
+│   │   ├── cloudinary/
+│   │   ├── orders/
+│   │   ├── queries/
+│   │   ├── security/
+│   │   └── validations/
+│   │
+│   ├── hooks/
+│   ├── store/
+│   └── types/
+│
+├── scripts/
+├── sample-images/
+├── package.json
+├── drizzle.config.ts
+├── next.config.ts
+└── README.md
+```
+
+---
+
+## Getting Started
+
+Follow these instructions to run Aura Dial locally.
 
 ### Prerequisites
 
-- Node.js 20+
-- A [Neon](https://neon.tech/) PostgreSQL database
-- A [Cloudinary](https://cloudinary.com/) account
+- Node.js
+- npm
+- PostgreSQL database (or Neon account)
+- Cloudinary account
 
-### Installation
+### 1. Clone the Repository
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/your-username/aura-dial-store.git
+git clone https://github.com/YOUR_USERNAME/aura-dial-store.git
 cd aura-dial-store
+```
 
-# 2. Install dependencies
+### 2. Install Dependencies
+
+```bash
 npm install
+```
 
-# 3. Configure environment variables
-cp .env.example .env   # or create .env manually (see below)
+### 3. Configure Environment Variables
 
-# 4. Push the schema and seed sample data
+Create a `.env` file in the project root.
+
+```env
+DATABASE_URL=your_neon_postgresql_connection_string
+
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+ADMIN_SESSION_SECRET=your_secure_random_session_secret
+```
+
+**Important:** Never commit `.env` files, database credentials, or private API keys to GitHub.
+
+### 4. Initialize the Database
+
+```bash
 npm run db:push
 npm run db:seed
+```
 
-# 5. Start the development server
+### 5. Start the Development Server
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open your browser and navigate to:
 
-### Environment Variables
-
-| Variable | Description |
-|:--|:--|
-| `DATABASE_URL` | Neon PostgreSQL connection string |
-| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
-| `CLOUDINARY_API_KEY` | Cloudinary API key |
-| `CLOUDINARY_API_SECRET` | Cloudinary API secret |
-| `ADMIN_SESSION_SECRET` | Long random string used to sign admin sessions |
-
-> [!WARNING]
-> Never commit your `.env` file. Generate a strong `ADMIN_SESSION_SECRET`, for example with `openssl rand -base64 32`.
+```text
+http://localhost:3000
+```
 
 ---
 
-## 📜 Available Scripts
+## Available Commands
 
 | Command | Description |
-|:--|:--|
-| `npm run dev` | Start the local development server |
-| `npm run build` | Create an optimized production build |
-| `npm run start` | Run the production server |
-| `npm run lint` | Lint the codebase with ESLint |
-| `npm run db:push` | Sync the Drizzle schema to the database |
-| `npm run db:seed` | Seed the database with sample data |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint checks |
+| `npm run db:push` | Apply database schema |
+| `npm run db:seed` | Populate initial sample data |
 
 ---
 
-## 🌐 Deployment
+## Application Preview
 
-Aura Dial is deployed on **Vercel** with a **Neon** serverless database.
+### Storefront
 
-1. Import the repository into Vercel.
-2. Add the environment variables listed above.
-3. Deploy. Vercel handles builds and previews automatically.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/71c71176-3a92-4a0e-b71c-3be16c07470d" width="100%" alt="Aura Dial Homepage">
+  <br>
+  <em>Premium customer-facing storefront</em>
+</p>
 
-See [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md) for the pre-launch verification steps.
+### Product Catalog
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a8d21c49-3c12-487d-b961-5dbc83f5c994" width="100%" alt="Product Catalog">
+  <br>
+  <em>Product discovery and shopping experience</em>
+</p>
+
+### Checkout & Orders
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d9e759c6-eb42-4313-a55e-e2f41bee6bf7" width="100%" alt="Checkout and Orders">
+  <br>
+  <em>Customer checkout and order experience</em>
+</p>
+
+### Administrative Dashboard
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4e14791b-4d71-4a14-baf3-7031bb31480a" width="100%" alt="Admin Dashboard">
+  <br>
+  <em>Administrative overview</em>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7c288f4c-dc4b-4a8d-8fff-b9f7c1d0b906" width="100%" alt="Admin Product Management">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/95121e8a-f7f1-4085-be58-1541baa16ed4" width="100%" alt="Admin Store Management">
+</p>
 
 ---
 
-## 📸 Screenshots
+## Deployment
 
-### 🏠 Homepage
+Aura Dial is deployed using **Vercel**.
 
-<img width="1917" height="955" alt="Homepage" src="https://github.com/user-attachments/assets/71c71176-3a92-4a0e-b71c-3be16c07470d" />
+The production deployment integrates the application with its configured database and media services.
 
-### ⏱️ Product & Catalog
+To deploy your own instance:
 
-<img width="1917" height="973" alt="Product and Catalog" src="https://github.com/user-attachments/assets/a8d21c49-3c12-487d-b961-5dbc83f5c994" />
-
-### 📦 Order & Checkout
-
-<img width="1917" height="966" alt="Order and Checkout" src="https://github.com/user-attachments/assets/d9e759c6-eb42-4313-a55e-e2f41bee6bf7" />
-
-### 🔐 Admin Dashboard
-
-<img width="1916" height="972" alt="Admin Dashboard 1" src="https://github.com/user-attachments/assets/4e14791b-4d71-4a14-baf3-7031bb31480a" />
-
-<img width="1917" height="986" alt="Admin Dashboard 2" src="https://github.com/user-attachments/assets/7c288f4c-dc4b-4a8d-8fff-b9f7c1d0b906" />
-
-<img width="1917" height="970" alt="Admin Dashboard 3" src="https://github.com/user-attachments/assets/95121e8a-f7f1-4085-be58-1541baa16ed4" />
+1. Push your project to GitHub.
+2. Import the repository into Vercel.
+3. Configure the required environment variables.
+4. Connect the production database.
+5. Deploy the application.
 
 ---
 
-## 📄 License
+## Ownership & License
 
-This project is privately owned by **Aura Dial**. All rights reserved © 2026.
+Aura Dial is a privately owned project.
+
+All rights reserved © 2026 Aura Dial.
+
+Unauthorized reproduction, redistribution, or commercial use is prohibited without permission from the owner.
 
 ---
 
-<div align="center">
+<p align="center">
+  <strong>Designed & Developed by Saad Ullah</strong>
+  <br>
+  Full-Stack E-Commerce Development
+  <br><br>
+  <a href="https://aura-dial-delta.vercel.app/">Visit Aura Dial</a>
+</p>
 
-Designed & developed by **Saad Ullah** for **Aura Dial**
-
-[**🔗 Visit the Live Store**](https://aura-dial-delta.vercel.app)
-
-</div>
+<p align="center">
+  <sub>Crafted with attention to detail, performance, and user experience.</sub>
+</p>
