@@ -433,7 +433,7 @@ npm run db:seed
 npm run dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000) in your browser.
+Then open aura-dial-delta.vercel.app in your browser.
 
 ---
 
