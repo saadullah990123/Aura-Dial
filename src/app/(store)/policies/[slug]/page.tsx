@@ -8,8 +8,10 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const page = isPolicySlug(slug) ? await getContentPage(slug) : null;
-  return { title: page?.title ?? "Not found" };
+  if (!isPolicySlug(slug)) notFound();
+  const page = await getContentPage(slug);
+  if (!page || page.body.trim() === "") notFound();
+  return { title: `${page.title} | Aura Dial` };
 }
 
 export default async function PolicyPage({ params }: Props) {
